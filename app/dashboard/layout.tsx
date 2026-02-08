@@ -1,44 +1,76 @@
 "use client"
-import { SidebarProvider } from "@/components/ui/sidebar";
-import Navbar from "@/components/Navbar";
-import SidebarComponent from "@/components/Sidebar";
-import Footer from "@/components/Footer";
-import {useAuth} from "@/app/context/useAuth";
-import {useEffect} from "react";
-import {useRouter} from "next/navigation";
-import {LoaderOne} from "@/components/ui/loader";
+
+import { SidebarProvider } from "@/components/ui/sidebar"
+import SidebarComponent from "@/components/Sidebar"
+import { useAuth } from "@/app/context/useAuth"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { LoaderOne } from "@/components/ui/loader"
+import { Button } from "@/components/ui/button"
+import { Menu } from "lucide-react"
 
 export default function DashboardLayout({ children }) {
     const router = useRouter()
-    const {user, loading} = useAuth()
+    const { user, loading } = useAuth()
+    const [sidebarOpen, setSidebarOpen] = useState(false)
+
     useEffect(() => {
         if (!user && !loading) {
-            router.replace('/sign-up')
+            router.replace("/sign-up")
         }
-
-    }, [user, loading, router]);
+    }, [user, loading, router])
 
     if (!user && loading) {
-        return  <div className='flex h-screen w-screen items-center justify-center'>
-            <LoaderOne/>
-        </div>
+        return (
+            <div className="flex h-screen w-screen items-center justify-center">
+                <LoaderOne />
+            </div>
+        )
     }
+
     return (
         <SidebarProvider>
-            <div className="min-h-screen min-w-screen flex flex-col">
+            <div className="min-h-screen flex">
 
+                {/* OVERLAY (mobile) */}
+                {sidebarOpen && (
+                    <div
+                        className="fixed inset-0 z-40 bg-black/40 md:hidden"
+                        onClick={() => setSidebarOpen(false)}
+                    />
+                )}
 
-                <div className="flex flex-1 w-screen">
-                    <aside className="w-[280px] border-r">
-                        <SidebarComponent />
-                    </aside>
+                {/* SIDEBAR */}
+                <aside
+                    className={`
+            fixed z-50 h-full w-[280px] bg-white border-r
+            transform transition-transform duration-300
+            md:static md:translate-x-0
+            ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          `}
+                >
+                    <SidebarComponent onClose={() => setSidebarOpen(false)} />
+                </aside>
 
-                    <main className="flex-1 w-full overflow-y-auto">
+                {/* CONTENT */}
+                <div className="flex-1 flex flex-col w-full">
+
+                    {/* MOBILE HEADER */}
+                    <div className="md:hidden flex items-center gap-2 p-3 border-b">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setSidebarOpen(true)}
+                        >
+                            <Menu />
+                        </Button>
+                        <span className="font-semibold">Диетикс</span>
+                    </div>
+
+                    <main className="flex-1 overflow-y-auto">
                         {children}
                     </main>
                 </div>
-
-
             </div>
         </SidebarProvider>
     )

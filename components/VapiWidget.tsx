@@ -166,7 +166,7 @@ function VapiWidget() {
 
 
 
-      <div className="flex items-center justify-center  gap-6 mb-12">
+      <div className="flex flex-wrap items-center justify-center  gap-6 mb-12">
 
 
         <Card style={{width: '400px', height: '250px'}} className="bg-card/90 backdrop-blur-sm border border-border overflow-hidden relative">

@@ -49,7 +49,7 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {useDiets} from "@/app/context/DietsContext";
 
-const SidebarComponent = () => {
+const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
 
     const [isCreating, setIsCreating] = useState<boolean>(false)
     const [name, setName] = useState<string>('')
@@ -178,9 +178,9 @@ const SidebarComponent = () => {
                         ) : (
 
                             diets.map((item: any, index: number) => (
-                                <Link
-                                    key={item.dietId || index}
+                                <Link key={index}
                                     href={`/diet-view/${item.dietId}`}
+                                    onClick={() => onClose?.()}
                                     className='my-2 hover:bg-gray-100 flex items-center justify-between  transition-all py-2 px-4 font-semibold rounded-lg cursor-pointer block'
                                 >
                                     <h2 className='line-clamp-1 text-sm  '>
@@ -260,7 +260,8 @@ const SidebarComponent = () => {
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem asChild>
-                                        <Link href="/profile" className="flex items-center gap-2">
+                                        <Link
+                                                    onClick={() => onClose?.()} href="/profile" className="flex items-center gap-2">
                                             <UserIcon size={16} /> Профиль
                                         </Link>
                                     </DropdownMenuItem>
@@ -274,7 +275,8 @@ const SidebarComponent = () => {
                                 </DropdownMenuContent>
                             </DropdownMenu>
 
-                            <Link href='/pricing'>
+                            <Link
+                                        onClick={() => onClose?.()} href='/pricing'>
                                 <Button className='w-full flex items-center gap-2'>
                                     <FaCrown/> Обновить тариф
                                 </Button>

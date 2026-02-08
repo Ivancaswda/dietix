@@ -72,7 +72,7 @@ const HomePage = () => {
             </section>
             <DietCards/>
             <InfoDietCarousel/>
-            <div className='px-20'>
+            <div className='px-2 sm:px-20'>
                 <div   style={{marginTop: '80px', marginBottom: '20px'}} className="z-10 flex items-center justify-between bg-gradient-to-br from-primary/10 via-primary/5 to-background rounded-3xl p-8 border border-primary/20 mb-12 overflow-hidden">
                     <div className="space-y-4 ">
                         <div  className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
