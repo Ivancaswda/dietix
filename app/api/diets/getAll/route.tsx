@@ -6,17 +6,27 @@ import getServerUser from "@/app/lib/auth-server";
 
 export async function GET(req: NextRequest) {
     try {
-        const user = await getServerUser()
+        const user = await getServerUser();
+
+        if (!user || !user.email) {
+            return NextResponse.json(
+                { error: "Not authorized" },
+                { status: 401 }
+            );
+        }
 
         const dietResult = await db
             .select()
-            .from(dietsTable).where(eq(dietsTable.createdBy, user?.email)).orderBy(desc(dietsTable.id));
+            .from(dietsTable)
+            .where(eq(dietsTable.createdBy, user.email))
+            .orderBy(desc(dietsTable.id));
 
-
-
-        return NextResponse.json({diets: dietResult})
+        return NextResponse.json({ diets: dietResult });
     } catch (error) {
-        console.error("DB query failed:", error)
-        return NextResponse.json({ error: "Failed to fetch diets" }, { status: 500 })
+        console.error("DB query failed:", error);
+        return NextResponse.json(
+            { error: "Failed to fetch diets" },
+            { status: 500 }
+        );
     }
 }

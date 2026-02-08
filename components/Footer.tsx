@@ -65,7 +65,7 @@ const Footer = () => {
                             <li><a href="/dashboard" className="hover:text-white/80">Создание диеты</a></li>
                             <li><a href="/pricing" className="hover:text-white/80">Подписка</a></li>
                             <li><a href="/profile" className="hover:text-white/80">Аккаунт</a></li>
-                            <li><a href="/faq" className="hover:text-white/80">FAQ</a></li>
+                            <li><a href="#faq" className="hover:text-white/80">FAQ</a></li>
                         </ul>
                     </div>
 
@@ -73,7 +73,7 @@ const Footer = () => {
                     <div>
                         <h3 className="text-lg font-semibold mb-4">Поддержка</h3>
                         <ul className="space-y-2 text-white mb-6">
-                            <li><a href="/support" className="hover:text-white/80">Связаться с нами</a></li>
+                            <li><a href="#support" className="hover:text-white/80">Связаться с нами</a></li>
                             <li><a href="/policy" className="hover:text-white/80">Конфиденциальность</a></li>
                             <li><a href="/terms" className="hover:text-white/80">Условия использования</a></li>
                         </ul>

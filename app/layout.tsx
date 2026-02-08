@@ -35,7 +35,7 @@ export default function RootLayout({
             <AuthProvider>
                 <html lang="ru">
                     <body>
-                        <NavbarWrapper />
+                            <NavbarWrapper />
                             <DietsProvider>
                                 {children}
                             </DietsProvider>

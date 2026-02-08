@@ -9,6 +9,7 @@ import {Textarea} from "@/components/ui/textarea";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {useAuth} from "@/app/context/useAuth";
 import {FaPersonCircleCheck, FaUserDoctor} from "react-icons/fa6";
+import axios from "axios";
 
 const FloatingAssistant = () => {
     const messagesEndRef = useRef<HTMLDivElement | null>(null)
@@ -82,7 +83,7 @@ const FloatingAssistant = () => {
     }, [messages])
 
     return (
-        <>
+        <div id='support'>
 
             <motion.button
                 onClick={() => setOpen(true)}
@@ -220,24 +221,25 @@ const FloatingAssistant = () => {
                                     onClick={async () => {
                                         try {
                                             setLoading(true)
-                                            await fetch('/api/support', {
-                                                method: 'POST',
-                                                headers: { 'Content-Type': 'application/json' },
-                                                body: JSON.stringify({
+                                            const res =await axios.post('/api/support', {
                                                     email,
                                                     message: supportInput,
-                                                }),
                                             })
+                                            const data =res.data
+                                            if (data.success) {
+                                                setSupportMode(false)
+                                                setMessages((prev) => [
+                                                    ...prev,
+                                                    {
+                                                        role: 'assistant',
+                                                        content:
+                                                            'Спасибо! Мы получили сообщение и скоро ответим 🙌',
+                                                    },
+                                                ])
 
-                                            setSupportMode(false)
-                                            setMessages((prev) => [
-                                                ...prev,
-                                                {
-                                                    role: 'assistant',
-                                                    content:
-                                                        'Спасибо! Мы получили сообщение и скоро ответим 🙌',
-                                                },
-                                            ])
+                                            }
+
+
                                             setLoading(false)
                                             setSupportInput('')
                                         } catch (err) {
@@ -257,7 +259,7 @@ const FloatingAssistant = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </>
+        </div>
     )
 }
 

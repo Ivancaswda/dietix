@@ -21,11 +21,7 @@ import {useRouter} from "next/navigation";
 const Navbar = () => {
     const { user, logout, loading } = useAuth()
     const router = useRouter()
-    useEffect(() => {
-        if (!user && !loading) {
-            router.replace('/sign-up')
-        }
-    },[user, loading, router])
+
     return (
         <nav className="border-b bg-sidebar/50 max-w-screen overflow-x-hidden backdrop-blur-sm  sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4  flex items-center justify-between h-16">
@@ -62,7 +58,7 @@ const Navbar = () => {
                     {user ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="rounded-full">
+                                <Button variant="ghost" size="icon" className="rounded-full hover:border-primary border-2 transition">
                                     <Image
                                         src={user.avatarUrl || '/default-avatar.png'}
                                         alt={user?.userName}
