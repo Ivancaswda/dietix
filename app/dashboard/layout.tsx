@@ -9,6 +9,7 @@ import {useRouter} from "next/navigation";
 import {LoaderOne} from "@/components/ui/loader";
 import {Button} from "@/components/ui/button";
 import {Menu} from 'lucide-react'
+import {DietsProvider} from "@/app/context/DietsContext";
 export default function DashboardLayout({ children }) {
     const router = useRouter()
     const {user, loading} = useAuth()
@@ -26,31 +27,34 @@ export default function DashboardLayout({ children }) {
         </div>
     }
     return (
-        <SidebarProvider>
-            <div className="min-h-screen min-w-screen flex flex-col">
-                <div className="md:hidden flex items-center gap-2 p-3 border-b">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setSidebarOpen(true)}
-                    >
-                        <Menu />
-                    </Button>
-                    <span className="font-semibold">Диетикс</span>
+
+
+            <SidebarProvider>
+                <div className="min-h-screen min-w-screen flex flex-col">
+                    <div className="md:hidden flex items-center gap-2 p-3 border-b">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setSidebarOpen(true)}
+                        >
+                            <Menu />
+                        </Button>
+                        <span className="font-semibold">Диетикс</span>
+                    </div>
+
+                    <div className="flex flex-1 w-screen">
+                        <aside className="w-[280px] md:block hidden border-r">
+                            <SidebarComponent setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
+                        </aside>
+
+                        <main className="flex-1 w-full overflow-y-auto">
+                            {children}
+                        </main>
+                    </div>
+
+
                 </div>
+            </SidebarProvider>
 
-                <div className="flex flex-1 w-screen">
-                    <aside className="w-[280px] md:block hidden border-r">
-                        <SidebarComponent setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
-                    </aside>
-
-                    <main className="flex-1 w-full overflow-y-auto">
-                        {children}
-                    </main>
-                </div>
-
-
-            </div>
-        </SidebarProvider>
     )
 }

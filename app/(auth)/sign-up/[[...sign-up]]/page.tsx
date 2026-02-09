@@ -37,7 +37,7 @@ function SignUp() {
 
             const userData = await userRes.json()
             setUser(userData.user)
-            toast.success('Добро пожаловать в Websity!')
+            toast.success('Добро пожаловать в Диетикс!')
             router.replace('/dashboard')
         } catch (err: any) {
             toast.error('Ошибка регистрации. Проверьте данные.')

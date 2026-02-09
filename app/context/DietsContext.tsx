@@ -1,10 +1,15 @@
-// app/context/DietsContext.tsx
 'use client'
-import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import React, {
+    createContext,
+    useContext,
+    useState,
+    ReactNode,
+    useEffect
+} from "react";
 import axios from "axios";
-import { toast } from "sonner";
+import { usePathname } from "next/navigation";
 
-type DietType = any; // Подставь тип диеты
+type DietType = any;
 
 interface DietsContextType {
     diets: DietType[];
@@ -16,6 +21,7 @@ const DietsContext = createContext<DietsContextType | undefined>(undefined);
 
 export const DietsProvider = ({ children }: { children: ReactNode }) => {
     const [diets, setDiets] = useState<DietType[]>([]);
+    const pathname = usePathname();
 
     const refreshDiets = async () => {
         try {
@@ -23,13 +29,15 @@ export const DietsProvider = ({ children }: { children: ReactNode }) => {
             setDiets(data.diets ?? []);
         } catch (err) {
             console.log(err);
-            toast.error("Не удалось загрузить диеты");
         }
     };
 
     useEffect(() => {
+        // ❗ если мы на главной — ничего не делаем
+        if (pathname === "/") return;
+
         refreshDiets();
-    }, []);
+    }, [pathname]);
 
     return (
         <DietsContext.Provider value={{ diets, refreshDiets, setDiets }}>
@@ -40,6 +48,8 @@ export const DietsProvider = ({ children }: { children: ReactNode }) => {
 
 export const useDiets = () => {
     const context = useContext(DietsContext);
-    if (!context) throw new Error("useDiets must be used within a DietsProvider");
+    if (!context) {
+        throw new Error("useDiets must be used within a DietsProvider");
+    }
     return context;
 };

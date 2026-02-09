@@ -17,6 +17,7 @@ import { LogOutIcon, UserIcon } from 'lucide-react'
 
 import {useAuth} from "@/app/context/useAuth";
 import {useRouter} from "next/navigation";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 
 const Navbar = () => {
     const { user, logout, loading } = useAuth()
@@ -59,13 +60,14 @@ const Navbar = () => {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon" className="rounded-full hover:border-primary border-2 transition">
-                                    <Image
-                                        src={user.avatarUrl || '/default-avatar.png'}
-                                        alt={user?.userName}
-                                        width={32}
-                                        height={32}
-                                        className="rounded-full"
-                                    />
+                                    <Avatar>
+
+                                        <AvatarImage  src={user.avatarUrl}  width={32}
+                                                        height={32}/>
+                                        <AvatarFallback className='bg-primary text-white'>
+                                            {user.userName[0].toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56">

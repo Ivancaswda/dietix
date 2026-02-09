@@ -31,18 +31,21 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID} >
+        <DietsProvider>
+
+        <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID!} >
             <AuthProvider>
                 <html lang="ru">
                     <body>
                             <NavbarWrapper />
-                            <DietsProvider>
+
                                 {children}
-                            </DietsProvider>
+
                         <Toaster />
                     </body>
                 </html>
             </AuthProvider>
         </GoogleOAuthProvider>
+        </DietsProvider>
     );
 }

@@ -115,7 +115,7 @@ export default function VapiApiKeyDialog({ open, onClose, onSave }: Props) {
     return (
 
         <Dialog   open={open} onOpenChange={onClose}>
-            <DialogContent
+            <DialogContent style={{maxWidth: '800px'}}
                 className="w-[96vw] max-w-[1400px] h-[90vh] max-h-[90vh] overflow-y-auto rounded-3xl p-8"
             >
                 <DialogHeader className="sticky top-0 bg-background z-10 pb-4">
@@ -159,7 +159,7 @@ export default function VapiApiKeyDialog({ open, onClose, onSave }: Props) {
 
                 <div className='flex items-center gap-4'>
                     <section className="bg-muted/40 rounded-xl p-4">
-                        <div className="flex justify-between items-center mb-2">
+                        <div className="flex gap-4 justify-between items-center mb-2">
                             <h4 className="font-semibold">🗣 First Message</h4>
                             <Button size="sm" variant="outline" onClick={() => copy(FIRST_MESSAGE)}>
                                 <Copy className="w-4 h-4 mr-1" /> Копировать
@@ -177,7 +177,7 @@ export default function VapiApiKeyDialog({ open, onClose, onSave }: Props) {
 
 
                     <section className="bg-muted/40 rounded-xl p-4">
-                        <div className="flex justify-between items-center mb-2">
+                        <div className="flex gap-4 justify-between items-center mb-2">
                             <h4 className="font-semibold">⚙️ System Prompt</h4>
                             <Button size="sm" variant="outline" onClick={() => copy(SYSTEM_PROMPT)}>
                                 <Copy className="w-4 h-4 mr-1" /> Копировать
