@@ -218,15 +218,23 @@ const FloatingAssistant = () => {
                                 />
                                 <Button disabled={loading}
                                     className="w-full"
-                                    onClick={async () => {
-                                        try {
-                                            setLoading(true)
-                                            const res =await axios.post('/api/support', {
-                                                    email,
-                                                    message: supportInput,
-                                            })
-                                            const data =res.data
-                                            if (data.success) {
+                                        onClick={async () => {
+                                            try {
+                                                if (!supportInput.trim()) {
+                                                    return
+                                                }
+
+
+                                                setLoading(true)
+                                                await fetch('/api/support', {
+                                                    method: 'POST',
+                                                    headers: { 'Content-Type': 'application/json' },
+                                                    body: JSON.stringify({
+                                                        email,
+                                                        message: supportInput,
+                                                    }),
+                                                })
+
                                                 setSupportMode(false)
                                                 setMessages((prev) => [
                                                     ...prev,
@@ -236,19 +244,15 @@ const FloatingAssistant = () => {
                                                             'Спасибо! Мы получили сообщение и скоро ответим 🙌',
                                                     },
                                                 ])
-
+                                                setLoading(false)
+                                                setSupportInput('')
+                                            } catch (err) {
+                                                setLoading(false)
+                                                toast.error('Не удалось отправить письмо, выключите впн!')
+                                                console.log(err)
                                             }
 
-
-                                            setLoading(false)
-                                            setSupportInput('')
-                                        } catch (err) {
-                                            setLoading(false)
-                                            toast.error('Не удалось отправить письмо, выключите впн!')
-                                            console.log(err)
-                                        }
-
-                                    }}
+                                        }}
                                 >
                                     {loading? 'Подождите...' : 'Отправить'}
 
