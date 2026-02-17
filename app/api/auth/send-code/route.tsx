@@ -1,3 +1,4 @@
+/*
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import db from '@/app/config/db'
@@ -32,3 +33,4 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ message: 'Code sent' })
 }
+*/
