@@ -13,6 +13,7 @@ import { Loader2Icon } from 'lucide-react'
 import { FaGithub, FaGoogle } from 'react-icons/fa'
 import Image from "next/image";
 import GoogleButton from "@/app/(auth)/GoogleButton";
+import VkButton from "@/app/(auth)/VkButton";
 function SignIn() {
     const { user, setUser } = useAuth()
     const router = useRouter()
@@ -145,6 +146,7 @@ function SignIn() {
 
                     <div className="my-6 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
                     <GoogleButton/>
+                    <VkButton/>
                 </div>
             </div>
         </div>);

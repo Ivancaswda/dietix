@@ -15,6 +15,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import {Button} from "@/components/ui/button";
 import GoogleButton from "@/app/(auth)/GoogleButton";
+import VkButton from "@/app/(auth)/VkButton";
 function SignUp() {
     const { user, setUser, loading } = useAuth()
     const router = useRouter()
@@ -163,6 +164,7 @@ function SignUp() {
                     <div className="my-6 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
 
                     <GoogleButton/>
+                    <VkButton/>
                 </div>
             </div>
         </div>)

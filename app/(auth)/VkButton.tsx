@@ -59,8 +59,8 @@ const VkButton = () => {
     }, []);
 
     return (
-        <>
-            {/* Загружаем SDK */}
+        <div className='mt-4'>
+
             <Script
                 src="https://unpkg.com/@vkid/sdk@2/dist-sdk/umd/index.js"
                 strategy="afterInteractive"
@@ -68,7 +68,7 @@ const VkButton = () => {
 
             {/* Контейнер кнопки */}
             <div ref={containerRef} />
-        </>
+        </div>
     );
 };
 
