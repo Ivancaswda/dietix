@@ -30,7 +30,7 @@ export default function DashboardLayout({ children }) {
 
 
             <SidebarProvider>
-                <div className="min-h-screen min-w-screen flex flex-col">
+                <div className="min-h-screen  overflow-x-hidden max-w-screen flex flex-col">
                     <div className="md:hidden flex items-center gap-2 p-3 border-b">
                         <Button
                             variant="ghost"
@@ -42,15 +42,39 @@ export default function DashboardLayout({ children }) {
                         <span className="font-semibold">Диетикс</span>
                     </div>
 
-                    <div className="flex flex-1 w-screen">
-                        <aside className="w-[280px] md:block hidden border-r">
+                    <div className="flex flex-1 w-screen relative">
+
+
+                        <aside className="w-[280px] md:block  hidden border-r">
+
                             <SidebarComponent setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
                         </aside>
 
+                        {/* Mobile overlay sidebar */}
+                        {sidebarOpen && (
+                            <>
+                                {/* Backdrop */}
+                                <div
+                                    className="fixed inset-0 bg-black/40 z-40 md:hidden"
+                                    onClick={() => setSidebarOpen(false)}
+                                />
+
+                                {/* Sidebar */}
+                                <div className="fixed top-0 left-0 h-full w-[280px] bg-white z-50 shadow-lg md:hidden">
+                                    <SidebarComponent
+                                        setSidebarOpen={setSidebarOpen}
+                                        sidebarOpen={sidebarOpen}
+                                    />
+                                </div>
+                            </>
+                        )}
+
+                        {/* Main content */}
                         <main className="flex-1 w-full overflow-y-auto">
                             {children}
                         </main>
                     </div>
+
 
 
                 </div>

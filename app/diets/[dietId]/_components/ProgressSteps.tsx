@@ -5,7 +5,7 @@ const steps = ["Цель", "Тело", "Тип питания", "КБЖУ", "У�
 
 export default function ProgressSteps({ currentStep }: { currentStep: number }) {
     return (
-        <div className="flex justify-between">
+        <div className="flex justify-between flex-wrap items-center gap-4">
             {steps.map((title, i) => {
                 const stepNumber = i + 1;
                 return (

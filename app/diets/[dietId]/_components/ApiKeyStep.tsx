@@ -17,7 +17,7 @@ export default function ApiKeyStep({
     const isValid = apiKey.trim().length > 20;
 
     return (
-        <Card className="max-w-2xl mx-auto">
+        <Card className="max-w-2xl w-full mx-auto">
             <CardContent className="p-8 space-y-8">
 
                 <div className="text-center space-y-2 mb-4">
@@ -69,7 +69,7 @@ export default function ApiKeyStep({
                 </div>
 
 
-                <div className="flex justify-between pt-4">
+                <div className="flex flex-wrap gap-4 items-center justify-between pt-4">
                     <Button variant="outline" onClick={onBack}>
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Назад

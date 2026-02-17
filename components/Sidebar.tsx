@@ -111,8 +111,8 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
 
 
     return (
-        <SidebarProvider>
-            <Sidebar className='' style={{marginTop: '70px'}}  >
+
+            <Sidebar collapsible="none" className='' style={{marginTop: '70px'}}  >
                 <SidebarHeader className='px-5 py-2 ' >
 
 
@@ -289,7 +289,7 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
                 </SidebarFooter>
 
             </Sidebar>
-        </SidebarProvider>
+
     )
 }
 export default SidebarComponent
