@@ -7,13 +7,15 @@ import {Ruler, Weight, Calendar, ArrowLeft} from "lucide-react";
 export default function BodyParamsStep({
                                            onNext,
                                            onBack,
+    draft
                                        }: {
     onNext: (params: { height: number; weight: number; age: number }) => void;
     onBack: () => void;
+    draft: any
 }) {
-    const [height, setHeight] = useState<number | "">("");
-    const [weight, setWeight] = useState<number | "">("");
-    const [age, setAge] = useState<number | "">("");
+    const [height, setHeight] = useState<number | "">(draft.height ?? "");
+    const [weight, setWeight] = useState<number | "">(draft.weight ?? "");
+    const [age, setAge] = useState<number | "">(draft.age ??"");
 
     const isValid = height && weight && age;
 

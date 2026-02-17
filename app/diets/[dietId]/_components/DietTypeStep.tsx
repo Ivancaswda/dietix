@@ -29,11 +29,12 @@ const DIETS = [
 export default function DietTypeStep({
                                          onNext,
                                          onBack,
+    draft
                                      }: {
     onNext: (dietType: string) => void;
-    onBack: () => void;
+    onBack: () => void; draft: any
 }) {
-    const [dietType, setDietType] = useState<string>("");
+    const [dietType, setDietType] = useState<string>(draft.dietType ??"");
 
     return (
         <Card className="max-w-3xl mx-auto">

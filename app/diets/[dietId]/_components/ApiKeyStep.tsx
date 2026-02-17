@@ -7,11 +7,13 @@ import { useState } from "react";
 export default function ApiKeyStep({
                                        onNext,
                                        onBack,
+    draft
                                    }: {
     onNext: (apiKey: string) => void;
     onBack: () => void;
+    draft:any
 }) {
-    const [apiKey, setApiKey] = useState("");
+    const [apiKey, setApiKey] = useState(draft.apiKey ??"");
     const isValid = apiKey.trim().length > 20;
 
     return (

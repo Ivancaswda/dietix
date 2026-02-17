@@ -7,6 +7,7 @@ import { useState } from "react";
 export default function MacrosStep({
                                        onNext,
                                        onBack,
+    draft
                                    }: {
     onNext: (data: {
         calories: number;
@@ -15,11 +16,12 @@ export default function MacrosStep({
         carbs: number;
     }) => void;
     onBack: () => void;
+    draft: any
 }) {
-    const [calories, setCalories] = useState<number | "">("");
-    const [protein, setProtein] = useState<number | "">("");
-    const [fat, setFat] = useState<number | "">("");
-    const [carbs, setCarbs] = useState<number | "">("");
+    const [calories, setCalories] = useState<number | "">(draft.calories ?? "");
+    const [protein, setProtein] = useState<number | "">(draft.protein ??"");
+    const [fat, setFat] = useState<number | "">(draft.fat ??"");
+    const [carbs, setCarbs] = useState<number | "">(draft.carbs ??"");
 
     const isValid =
         calories && protein && fat && carbs;

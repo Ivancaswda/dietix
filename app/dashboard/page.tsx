@@ -147,7 +147,7 @@ const DashboardPage = () => {
             ) : (
                 <div className="flex flex-wrap  gap-6 w-full">
                     {drafts.map((diet) => (
-                        <Link href={`/diet-view/${diet.dietId}`}>
+                        <Link href={`/diets/${diet.dietId}`}>
                             <Card  key={diet.dietId} className="border-dashed">
                                 <CardContent className="p-5 space-y-2">
                                     <div className="flex items-start justify-between">

@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { Flame, Minus, Plus } from "lucide-react";
 import clsx from "clsx";
+import axios from "axios";
 
 type Goal = {
     id: string;
@@ -33,11 +34,17 @@ const goals: Goal[] = [
 ];
 
 export default function GoalStep({
-                                     onNext,
+                                     onNext, draft
                                  }: {
-    onNext: (dietType: string) => void;
+    onNext: (dietType: string) => void; draft: any
 }) {
-    const [goal, setGoal] = useState<string | null>(null);
+    const [goal, setGoal] = useState<string | null>(draft.goal ?? null);
+
+    const onSave = async () => {
+        await axios.post("/api/diets/save", {goal: goals})
+    }
+    console.log(goal)
+
 
     return (
         <Card className="max-w-3xl mx-auto my-6">

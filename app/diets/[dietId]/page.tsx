@@ -1,5 +1,5 @@
 "use client"
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useParams} from "next/navigation";
 import ProgressSteps from "@/app/diets/[dietId]/_components/ProgressSteps";
 import GoalStep from "@/app/diets/[dietId]/_components/GoalStep";
@@ -11,6 +11,7 @@ import DietBreadcrumbs from "@/app/diets/[dietId]/_components/DietBreadcrumbs";
 import ApiKeyStep from "@/app/diets/[dietId]/_components/ApiKeyStep";
 import {DietDiaryCard} from "@/app/diets/[dietId]/_components/DietDiaryCard";
 import {DietRestrictionsCard} from "@/app/diets/[dietId]/_components/DietRestrictionsCard";
+import axios from "axios";
 
 const DietIdPage = () => {
     const {dietId} = useParams()
@@ -19,13 +20,30 @@ const DietIdPage = () => {
 
     const back = () => setStep((s) => s - 1);
     const [draft, setDraft] = useState<any>({});
+    useEffect(() => {
+        const loadDraft = async () => {
+            try {
+                const res = await axios.get(`/api/diets/getOne?dietId=${dietId}`);
+                if (res.data) {
+                    setDraft(res.data.diet[0]);
+                }
+            } catch (e) {
+                console.error("load draft error");
+            }
+        };
 
-    const updateDraft = (data: Record<string, any>) => {
+        loadDraft();
+    }, [dietId]);
+
+    const updateDraft = async (data: Record<string, any>) => {
+
         setDraft((prev) => ({
             ...prev,
             ...data,
         }));
+        await axios.post('/api/diets/save', {data: data, dietId: dietId})
     };
+    console.log('draft===', draft)
 
     return (
         <div>
@@ -33,12 +51,13 @@ const DietIdPage = () => {
                 <DietBreadcrumbs setStep={setStep} step={step}/>
                 <ProgressSteps currentStep={step} />
 
-                {step === 1 && <GoalStep onNext={(goal) => {
+                {step === 1 && <GoalStep draft={draft} onNext={(goal) => {
                     updateDraft({ goal })
                     setStep(2)
                 }} />}
                 {step === 2 && (
                     <BodyParamsStep
+                        draft={draft}
                         onBack={back}
                         onNext={(data) => {
                             updateDraft(data);
@@ -46,24 +65,24 @@ const DietIdPage = () => {
                         }}
                     />
                 )}
-                {step === 3 && <DietTypeStep onNext={(dietType) => {
+                {step === 3 && <DietTypeStep draft={draft} onNext={(dietType) => {
                     updateDraft({dietType})
                     setStep(4)
                 }} onBack={back} />}
-                {step === 4 && <MacrosStep   onNext={(data) => {
+                {step === 4 && <MacrosStep draft={draft}   onNext={(data) => {
                     updateDraft(data);
                     setStep(5);
                 }} onBack={back} />}
-                {step === 5 && <DietDiaryCard   onNext={(data) => {
+                {step === 5 && <DietDiaryCard draft={draft}   onNext={(data) => {
                     updateDraft(data);
                     setStep(6);
                 }} onBack={back} />}
-                {step === 6 && <DietRestrictionsCard   onNext={(data) => {
+                {step === 6 && <DietRestrictionsCard draft={draft}   onNext={(data) => {
                     updateDraft(data);
                     setStep(7);
                 }} onBack={back} />}
                 {step === 7 && (
-                    <ApiKeyStep
+                    <ApiKeyStep draft={draft}
                         onNext={(apiKey) => {
                             updateDraft({ apiKey });
                             setStep(8);

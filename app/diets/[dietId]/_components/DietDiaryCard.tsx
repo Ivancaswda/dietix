@@ -14,12 +14,14 @@ export function DietDiaryCard({
                                   initialMeals = [],
                                   onNext,
                                   onBack,
+                                    draft
                               }: {
     initialMeals?: Meal[];
     onNext: (data: { eatenMeals: Meal[] }) => void;
     onBack: () => void;
+    draft: any
 }) {
-    const [meals, setMeals] = useState<Meal[]>(initialMeals);
+    const [meals, setMeals] = useState<Meal[]>(draft.eatenMeals ?? initialMeals);
     const [mealName, setMealName] = useState("");
     const [calories, setCalories] = useState("");
 

@@ -100,7 +100,22 @@ export async function POST(req: NextRequest) {
         const [diet] = await db
             .update(dietsTable)
             .set({
-                ...data,
+                goal: data.goal,
+                dietType: data.dietType,
+                height: data.height,
+                weight: data.weight,
+                age: data.age,
+
+                calories: data.calories,
+                protein: data.protein,
+                fat: data.fat,
+                carbs: data.carbs,
+
+                apiKey: data.apiKey,
+
+                eatenMeals: data.eatenMeals ?? [],
+                restrictions: data.restrictions ?? [],
+
                 isConfigured: 1,
                 updatedOn: new Date(),
             })
@@ -118,7 +133,7 @@ ${JSON.stringify(data, null, 2)}
 ${JSON.stringify(data.restrictions)}
 
 Уже съедено сегодня:
-${JSON.stringify(data.diary)}
+${JSON.stringify(data.eatenMeals)}
 `;
 
 

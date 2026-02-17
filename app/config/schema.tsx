@@ -32,28 +32,11 @@ export const dietsTable = pgTable('diets', {
     activityLevel: varchar(),
     notes: varchar(),
     updatedOn: timestamp().defaultNow(),
-    isConfigured:  integer().default(0)
+    isConfigured:  integer().default(0),
+    eatenMeals: json(),
+    restrictions: json()
 })
-export const dietRestrictionsTable = pgTable('diet_restrictions', {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    dietId: integer().references(() => dietsTable.id),
-    product: varchar(),
-    type: varchar().default("intolerance"),
-})
-export const dietDiaryTable = pgTable('diet_diary', {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    dietId: integer().references(() => dietsTable.id),
 
-    mealName: varchar(),
-    mealType: varchar(),
-
-    calories: integer(),
-    protein: integer(),
-    fat: integer(),
-    carbs: integer(),
-
-    eatenAt: timestamp().defaultNow(),
-})
 export const dietMealsTable = pgTable('diet_meals', {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
 
@@ -126,10 +109,11 @@ export const aiMessagesTable = pgTable("aiMessages", {
 });
 
 
-export const aiMessagesFK = foreignKey({
-    columns: [aiMessagesTable.callId],
-    references: [aiCallsTable.id],
-    onDelete: "cascade",
+export const emailVerifications = pgTable("email_verifications", {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    email: text("email").notNull(),
+    code: text("code").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
 });
 
 

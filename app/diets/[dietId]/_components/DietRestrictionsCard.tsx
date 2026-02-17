@@ -9,13 +9,15 @@ export function DietRestrictionsCard({
                                          initialRestrictions = [],
                                          onNext,
                                          onBack,
+    draft
                                      }: {
     initialRestrictions?: string[];
     onNext: (data: { restrictions: string[] }) => void;
     onBack: () => void;
+    draft:any
 }) {
     const [value, setValue] = useState("");
-    const [restrictions, setRestrictions] = useState<string[]>(
+    const [restrictions, setRestrictions] = useState<string[]>(draft.restrictions ??
         initialRestrictions
     );
 
@@ -67,7 +69,7 @@ export function DietRestrictionsCard({
                     <Button variant="outline" onClick={onBack}>
                         Назад
                     </Button>
-                    <Button onClick={() => onNext({ restrictions })}>
+                    <Button disabled={value} onClick={() => onNext({ restrictions })}>
                         Продолжить
                     </Button>
                 </div>

@@ -14,6 +14,7 @@ import axios from "axios";
 const FloatingAssistant = () => {
     const messagesEndRef = useRef<HTMLDivElement | null>(null)
     const [open, setOpen] = useState(false)
+    const chatRef = useRef<HTMLDivElement | null>(null)
     const {user} = useAuth()
     const [aiLoading, setAiLoading] = useState(false)
     const [loading, setLoading] = useState<boolean>(false)
@@ -75,7 +76,24 @@ const FloatingAssistant = () => {
             setAiLoading(false)
         }
     }
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                chatRef.current &&
+                !chatRef.current.contains(event.target as Node)
+            ) {
+                setOpen(false)
+            }
+        }
 
+        if (open) {
+            document.addEventListener('mousedown', handleClickOutside)
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [open])
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({
             behavior: 'smooth',
@@ -97,7 +115,7 @@ const FloatingAssistant = () => {
             {/* Chat Window */}
             <AnimatePresence>
                 {open && (
-                    <motion.div
+                    <motion.div ref={chatRef}
                         initial={{ opacity: 0, y: 40 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 40 }}
