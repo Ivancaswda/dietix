@@ -28,8 +28,9 @@ export function DietRestrictionsCard({
         setRestrictions([...restrictions, value.trim()]);
         setValue("");
     };
-
+    console.log(restrictions)
     const removeRestriction = (item: string) => {
+        console.log('remove===')
         setRestrictions(restrictions.filter((r) => r !== item));
     };
 
@@ -40,26 +41,34 @@ export function DietRestrictionsCard({
                     🚫 Что вы не едите / не переносите
                 </h3>
 
-                <Input
-                    placeholder="Например: молоко, арахис, глютен"
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") addRestriction();
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        addRestriction();
                     }}
-                />
+                >
+                    <Input
+                        placeholder="Например: молоко, арахис, глютен"
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                        enterKeyHint="done"
+                    />
+                </form>
 
                 <div className="flex flex-wrap gap-2">
                     {restrictions.map((item) => (
                         <Badge
                             key={item}
-                            variant="secondary"
-                            className="flex items-center gap-1"
+                            variant="secondary"    onClick={() => {
+                            console.log('asasgsgagasgas')
+                            removeRestriction(item)
+                        }}
+                            className="flex cursor-pointer items-center gap-1"
                         >
                             {item}
                             <X
-                                className="w-3 h-3 cursor-pointer"
-                                onClick={() => removeRestriction(item)}
+                                className="w-3 h-3 "
+
                             />
                         </Badge>
                     ))}

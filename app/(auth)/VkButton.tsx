@@ -19,7 +19,7 @@ const VkButton = () => {
 
         VKID.Config.init({
             app: 54456526,
-            redirectUrl: "https://dietix-ru.vercel.app/api/auth/vk",
+            redirectUrl: window.location.origin,
             responseMode: VKID.ConfigResponseMode.Callback,
             source: VKID.ConfigSource.LOWCODE,
             scope: "",

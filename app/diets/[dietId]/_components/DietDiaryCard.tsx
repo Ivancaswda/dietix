@@ -54,7 +54,13 @@ export function DietDiaryCard({
                 </div>
 
 
-                <div className="flex flex-col mt-4 gap-4">
+                <form
+                    className="flex flex-col mt-4 gap-4"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        addMeal();
+                    }}
+                >
 
                     <div className="relative">
                         <Input
@@ -80,15 +86,15 @@ export function DietDiaryCard({
                     </div>
 
                     <Button
+                        type="submit"
                         size="lg"
                         className="w-full"
-                        onClick={addMeal}
                         disabled={!mealName || !calories}
                     >
                         <Plus className="mr-2" />
                         Добавить
                     </Button>
-                </div>
+                </form>
 
 
                 {meals.length > 0 && (

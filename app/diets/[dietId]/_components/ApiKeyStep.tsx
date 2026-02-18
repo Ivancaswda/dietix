@@ -23,7 +23,7 @@ export default function ApiKeyStep({
                 <div className="text-center space-y-2 mb-4">
                     <div className="flex justify-center">
                         <div className="p-3 rounded-full bg-muted">
-                            <KeyRound className="h-6 w-6" />
+                            <KeyRound className="h-6 w-6 text-primary" />
                         </div>
                     </div>
 
@@ -65,6 +65,9 @@ export default function ApiKeyStep({
                         >
                             Google AI Studio
                         </a>
+                    </p>
+                    <p className='text-sm font-semibold text-muted-foreground'>
+                        При необходимости используйте VPN
                     </p>
                 </div>
 
