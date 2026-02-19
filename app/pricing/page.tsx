@@ -58,10 +58,11 @@ export default function PricingPage() {
     }, [router, user, loading]);
 
     const handleCheckout = async (plan: "basic" | "premium") => {
-        const res = await axios.post("/api/stripe/create-checkout", {
+        const res = await axios.post("/api/payment/create", {
             plan,
-            userEmail: user?.email,
+            email: user?.email,
         });
+
         window.location.href = res.data.url;
     };
 
@@ -80,7 +81,7 @@ export default function PricingPage() {
                     Выберите тариф
                 </h1>
                 <p className="text-sm text-muted-foreground text-gray-700 max-w-xl mx-auto">
-                    Оплата осуществляется безопасно через Stripe. Начните с бесплатного,
+                    Оплата осуществляется безопасно через ЮKassa.  Начните с бесплатного,
                     затем улучшите тариф для получения дополнительных возможностей с AI Диетикс
                     и бронированием стоматологов.
                 </p>
