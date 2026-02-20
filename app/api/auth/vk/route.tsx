@@ -24,6 +24,8 @@ export async function POST(req: Request) {
 
         const payload = jwtDecode<VkIdPayload>(id_token);
 
+
+
         const vkUser = {
             id: payload.sub,
             first_name: payload.first_name || "VK",
@@ -31,8 +33,24 @@ export async function POST(req: Request) {
             photo_200: payload.picture || "",
         };
 
-        const name = `${vkUser.first_name} ${vkUser.last_name}`;
-        const avatar = vkUser.photo_200;
+        let firstName = payload.first_name;
+        let lastName = payload.last_name;
+        let avatar = payload.picture;
+
+        if (!firstName || !avatar) {
+            const vkRes = await fetch(
+                `https://api.vk.com/method/users.get?user_ids=${payload.sub}&fields=photo_200&access_token=${access_token}&v=5.199`
+            );
+
+            const vkData = await vkRes.json();
+            const vkApiUser = vkData.response?.[0];
+
+            if (vkApiUser) {
+                firstName = vkApiUser.first_name;
+                lastName = vkApiUser.last_name;
+                avatar = vkApiUser.photo_200;
+            }
+        }
         const email = `vk_${vkUser.id}@vk.local`; // VK часто не даёт email
 
         // Проверяем пользователя
@@ -48,7 +66,7 @@ export async function POST(req: Request) {
             const inserted = await db
                 .insert(usersTable)
                 .values({
-                    name,
+                    name: firstName + ' ' + lastName,
                     email,
                     password: "",
                     credits: 1,
@@ -62,7 +80,7 @@ export async function POST(req: Request) {
         } else {
             const updated = await db
                 .update(usersTable)
-                .set({ avatarUrl: avatar, name })
+                .set({ avatarUrl: avatar, name: firstName + ' ' + lastName })
                 .where(eq(usersTable.email, email))
                 .returning();
 
