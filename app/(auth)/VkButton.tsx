@@ -41,7 +41,7 @@ const VkButton = () => {
                     try {
                         const { code, device_id } = payload;
 
-                        // 🔥 получаем access_token
+
                         const tokenData = await VKID.Auth.exchangeCode(
                             code,
                             device_id
@@ -67,6 +67,7 @@ const VkButton = () => {
                             body: JSON.stringify({
                                 access_token: tokenData.access_token,
                                 user_id: tokenData.user_id,
+                                id_token: tokenData.id_token,
                             }),
                         });
 

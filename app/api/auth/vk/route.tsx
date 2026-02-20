@@ -3,10 +3,16 @@ import db from "@/app/config/db";
 import { usersTable } from "@/app/config/schema";
 import { eq } from "drizzle-orm";
 import { generateToken } from "@/app/lib/jwt";
-
+import {jwtDecode} from "jwt-decode";
+type VkIdPayload = {
+    sub: number;
+    first_name?: string;
+    last_name?: string;
+    picture?: string;
+};
 export async function POST(req: Request) {
     try {
-        const { access_token, user_id } = await req.json();
+        const { access_token, user_id,    id_token } = await req.json();
 
         if (!access_token || !user_id) {
             return NextResponse.json(
@@ -15,28 +21,15 @@ export async function POST(req: Request) {
             );
         }
 
-        // Получаем данные пользователя из VK
-        const vkRes = await fetch(
-            `https://api.vk.com/method/users.get?user_ids=${user_id}&fields=photo_200&access_token=${access_token}&v=5.199`
-        );
 
-        if (!vkRes.ok) {
-            return NextResponse.json(
-                { error: "Invalid VK token" },
-                { status: 401 }
-            );
-        }
+        const payload = jwtDecode<VkIdPayload>(id_token);
 
-        const vkData = await vkRes.json();
-
-        if (!vkData.response?.[0]) {
-            return NextResponse.json(
-                { error: "VK user not found" },
-                { status: 401 }
-            );
-        }
-
-        const vkUser = vkData.response[0];
+        const vkUser = {
+            id: payload.sub,
+            first_name: payload.first_name || "VK",
+            last_name: payload.last_name || "User",
+            photo_200: payload.picture || "",
+        };
 
         const name = `${vkUser.first_name} ${vkUser.last_name}`;
         const avatar = vkUser.photo_200;

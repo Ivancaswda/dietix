@@ -22,9 +22,9 @@ export async function POST(req: NextRequest) {
         .limit(1)
         .then((r) => r[0]);
 
-    if (!user) return NextResponse.json({ ok: true });
-
-
+    if (!user) return NextResponse.json({ ok: false });
+    console.log('user===', user)
+    console.log('metaType===', meta.type)
     if (meta.type === "credits") {
         const creditsToAdd = Number(meta.credits || 0);
 
@@ -37,9 +37,10 @@ export async function POST(req: NextRequest) {
     }
 
 
+
     if (meta.type === "plan") {
         const plan = meta.plan;
-
+        console.log('plan===', plan)
         const expiresAt = new Date();
         expiresAt.setMonth(expiresAt.getMonth() + 1); // +1 месяц
 
