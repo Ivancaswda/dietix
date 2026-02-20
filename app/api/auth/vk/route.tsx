@@ -3,40 +3,33 @@ import db from "@/app/config/db";
 import { usersTable } from "@/app/config/schema";
 import { eq } from "drizzle-orm";
 import { generateToken } from "@/app/lib/jwt";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+
 type VkIdPayload = {
     sub: number;
     first_name?: string;
     last_name?: string;
     picture?: string;
 };
+
 export async function POST(req: Request) {
     try {
-        const { access_token, user_id,    id_token } = await req.json();
+        const { access_token, id_token } = await req.json();
 
-        if (!access_token || !user_id) {
+        if (!access_token || !id_token) {
             return NextResponse.json(
-                { error: "Missing VK access token" },
+                { error: "Missing VK tokens" },
                 { status: 400 }
             );
         }
 
-
         const payload = jwtDecode<VkIdPayload>(id_token);
-
-
-
-        const vkUser = {
-            id: payload.sub,
-            first_name: payload.first_name || "VK",
-            last_name: payload.last_name || "User",
-            photo_200: payload.picture || "",
-        };
 
         let firstName = payload.first_name;
         let lastName = payload.last_name;
         let avatar = payload.picture;
 
+        // 🔥 fallback через VK API
         if (!firstName || !avatar) {
             const vkRes = await fetch(
                 `https://api.vk.com/method/users.get?user_ids=${payload.sub}&fields=photo_200&access_token=${access_token}&v=5.199`
@@ -51,9 +44,16 @@ export async function POST(req: Request) {
                 avatar = vkApiUser.photo_200;
             }
         }
-        const email = `vk_${vkUser.id}@vk.local`; // VK часто не даёт email
 
-        // Проверяем пользователя
+        // ✅ ГАРАНТИРОВАННЫЕ значения
+        firstName = firstName || "VK";
+        lastName = lastName || "User";
+        avatar = avatar || "";
+
+        const name = `${firstName} ${lastName}`;
+        const email = `vk_${payload.sub}@vk.local`;
+
+        // Проверка юзера
         const existingUsers = await db
             .select()
             .from(usersTable)
@@ -66,13 +66,13 @@ export async function POST(req: Request) {
             const inserted = await db
                 .insert(usersTable)
                 .values({
-                    name: firstName + ' ' + lastName,
+                    name,
                     email,
                     password: "",
                     credits: 1,
                     avatarUrl: avatar,
                     createdAt: new Date().toISOString(),
-                    tariff: 'free'
+                    tariff: "free",
                 })
                 .returning();
 
@@ -80,14 +80,16 @@ export async function POST(req: Request) {
         } else {
             const updated = await db
                 .update(usersTable)
-                .set({ avatarUrl: avatar, name: firstName + ' ' + lastName })
+                .set({
+                    name,
+                    avatarUrl: avatar,
+                })
                 .where(eq(usersTable.email, email))
                 .returning();
 
             user = updated[0];
         }
 
-        // Генерация JWT
         const token = generateToken({
             email: user.email,
             userName: user.name,
@@ -101,7 +103,7 @@ export async function POST(req: Request) {
                 userName: user.name,
                 avatarUrl: user.avatarUrl,
                 credits: user.credits,
-                tariff: 'free'
+                tariff: "free",
             },
         });
 
