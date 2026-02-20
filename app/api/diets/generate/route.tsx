@@ -7,7 +7,7 @@ import {
     mealsTable,
     mealIngredientsTable,
     ingredientReplacementsTable,
-    dietMealsTable,
+    dietMealsTable, usersTable,
 } from "@/app/config/schema";
 import { eq } from "drizzle-orm";
 import db from "@/app/config/db";
@@ -75,7 +75,6 @@ export const DIET_GENERATE_PROMPT = `
 }
 `;
 function safeJsonParse(text: string) {
-    // Убираем ```json и ```
     const cleaned = text
         .replace(/```json/gi, "")
         .replace(/```/g, "")
@@ -91,6 +90,30 @@ export async function POST(req: NextRequest) {
         if (!user) {
             return NextResponse.json({ error: "Not authorized" }, { status: 401 });
         }
+        const [dbUser] = await db
+            .select()
+            .from(usersTable)
+            .where(eq(usersTable.email, user.email));
+
+        if (!dbUser) {
+            return NextResponse.json({ error: "USER_NOT_FOUND" }, { status: 404 });
+        }
+
+
+        if (!dbUser.credits || dbUser.credits <= 0) {
+            return NextResponse.json(
+                { error: "NO_CREDITS" },
+                { status: 402 }
+            );
+        }
+
+
+        await db
+            .update(usersTable)
+            .set({
+                credits: dbUser.credits - 1,
+            })
+            .where(eq(usersTable.email, user.email));
 
         if (!data.apiKey) {
             return  NextResponse.json({error: 'No gemini api key'}, {status: 400})

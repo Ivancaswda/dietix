@@ -115,8 +115,8 @@ export default function VapiApiKeyDialog({ open, onClose, onSave }: Props) {
     return (
 
         <Dialog   open={open} onOpenChange={onClose}>
-            <DialogContent style={{maxWidth: '800px'}}
-                className="w-[96vw] max-w-[1400px] h-[90vh] max-h-[90vh] overflow-y-auto rounded-3xl p-8"
+            <DialogContent  style={{maxWidth: '800px', width: 'full'}}
+                className="w-full max-w-[1400px] h-[90vh] max-h-[90vh] overflow-y-auto rounded-xl p-2 sm:p-8"
             >
                 <DialogHeader className="sticky top-0 bg-background z-10 pb-4">
                     <DialogTitle className="text-3xl flex items-center gap-2">
@@ -127,8 +127,8 @@ export default function VapiApiKeyDialog({ open, onClose, onSave }: Props) {
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className='flex items-center gap-6'>
-                    <section className="space-y-2">
+                <div className='flex flex-wrap w-full items-center gap-6'>
+                    <section className="space-y-2 w-full">
                         <h3 className="font-semibold">📘 Шаг 1. Получение API Key</h3>
                         <ol className="list-decimal list-inside text-sm text-muted-foreground space-y-1">
                             <li>Перейдите на сайт <b>https://vapi.ai</b></li>
@@ -139,7 +139,7 @@ export default function VapiApiKeyDialog({ open, onClose, onSave }: Props) {
                     </section>
 
 
-                    <section className="space-y-2">
+                    <section className="space-y-2 w-full">
                         <h3 className="font-semibold">🧠 Шаг 2. Создание Assistant</h3>
                         <p className="text-sm text-muted-foreground">
                             В панели Vapi создайте нового Assistant и укажите следующие параметры:
@@ -157,7 +157,7 @@ export default function VapiApiKeyDialog({ open, onClose, onSave }: Props) {
                 </div>
 
 
-                <div className='flex items-center gap-4'>
+                <div className='flex flex-wrap w-full items-center gap-4'>
                     <section className="bg-muted/40 rounded-xl p-4">
                         <div className="flex gap-4 justify-between items-center mb-2">
                             <h4 className="font-semibold">🗣 First Message</h4>
@@ -194,7 +194,7 @@ export default function VapiApiKeyDialog({ open, onClose, onSave }: Props) {
                     </section>
                 </div>
                 <Separator className='my-6'/>
-                <div className='flex  items-center gap-6 w-full my-2'>
+                <div className='flex flex-wrap  items-center gap-6 w-full my-2'>
                     <section className="space-y-2">
                         <h3 className="font-semibold">🔐 Введите Vapi API Public Key</h3>
                         <Input

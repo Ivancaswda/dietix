@@ -12,12 +12,14 @@ import ApiKeyStep from "@/app/diets/[dietId]/_components/ApiKeyStep";
 import {DietDiaryCard} from "@/app/diets/[dietId]/_components/DietDiaryCard";
 import {DietRestrictionsCard} from "@/app/diets/[dietId]/_components/DietRestrictionsCard";
 import axios from "axios";
+import {useAuth} from "@/app/context/useAuth";
 
 const DietIdPage = () => {
     const {dietId} = useParams()
     const [step, setStep] = useState(1);
-
-
+    const { user } = useAuth();
+    console.log('user===', user)
+    const needsApiKey = !user?.tariff || user.tariff === "free";
     const back = () => setStep((s) => s - 1);
     const [draft, setDraft] = useState<any>({});
     useEffect(() => {
@@ -44,7 +46,11 @@ const DietIdPage = () => {
         await axios.post('/api/diets/save', {data: data, dietId: dietId})
     };
     console.log('draft===', draft)
-
+    useEffect(() => {
+        if (!needsApiKey && step === 7) {
+            setStep(8);
+        }
+    }, [needsApiKey, step]);
     return (
         <div>
             <div className="max-w-4xl flex flex-col gap-4 mx-auto p-6 space-y-6">
@@ -81,8 +87,9 @@ const DietIdPage = () => {
                     updateDraft(data);
                     setStep(7);
                 }} onBack={back} />}
-                {step === 7 && (
-                    <ApiKeyStep draft={draft}
+                {step === 7 && needsApiKey && (
+                    <ApiKeyStep
+                        draft={draft}
                         onNext={(apiKey) => {
                             updateDraft({ apiKey });
                             setStep(8);

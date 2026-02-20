@@ -40,7 +40,9 @@ export async function POST(req: Request) {
                     credits: 1,
                     avatarUrl: picture,
                     createdAt: new Date().toISOString(),
-                    tariffExpiresAt: null
+                    tariffExpiresAt: null,
+                    tariff: 'free',
+                    aiCallCount: 1
                 })
                 .returning();
             user = inserted[0];
@@ -65,6 +67,9 @@ export async function POST(req: Request) {
                 userName: user.name,
                 avatarUrl: user.avatarUrl,
                 credits: user.credits,
+                tariff: user.tariff,
+                tariffExpiresAt: user.tariffExpiresAt,
+                aiCallCount: user.aiCallCount
             },
         });
 

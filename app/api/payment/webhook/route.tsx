@@ -41,16 +41,33 @@ export async function POST(req: NextRequest) {
         const plan = meta.plan;
 
         const expiresAt = new Date();
-        expiresAt.setMinutes(expiresAt.getMinutes() + 1);
-        console.log('expiresAt===')
-        console.log(expiresAt)
-        await db
-            .update(usersTable)
-            .set({
-                tariff: plan,
-                tariffExpiresAt: expiresAt
-            })
-            .where(eq(usersTable.email, email));
+
+        if (plan === "basic") {
+            expiresAt.setMonth(expiresAt.getMonth() + 1);
+            await db
+                .update(usersTable)
+                .set({
+                    tariff: plan,
+                    tariffExpiresAt: expiresAt,
+                    aiCallCount: 10
+                })
+                .where(eq(usersTable.email, email));
+        }
+
+        if (plan === "premium") {
+            expiresAt.setMonth(expiresAt.getMonth() + 3);
+            await db
+                .update(usersTable)
+                .set({
+                    tariff: plan,
+                    tariffExpiresAt: expiresAt,
+                })
+                .where(eq(usersTable.email, email));
+        }
+
+        console.log("expiresAt===", expiresAt);
+
+
     }
 
     return NextResponse.json({ ok: true });

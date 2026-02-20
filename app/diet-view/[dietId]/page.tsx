@@ -58,7 +58,13 @@ const DietViewPage = () => {
             const res = await axios.get(`/api/diets/getOne?dietId=${dietId}`);
             setData(res.data);
         } catch (e) {
-            toast.error("Ошибка перегенерации");
+            if (e?.response?.data?.error === "NO_CREDITS") {
+                toast.error("У вас закончились кредиты 😢");
+                router.push('/pricing')
+                return;
+            }
+            console.log(e)
+            toast.error('ошибка в генерации!')
         } finally {
             setRegenerating(false);
         }

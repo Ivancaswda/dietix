@@ -34,7 +34,8 @@ export async function POST(req: Request) {
             tariff: 'free',
             avatarUrl: null,
             createdAt: new Date().toISOString(),
-            tariffExpiresAt: null
+            tariffExpiresAt: null,
+            aiCallCount: 1
         }).returning();
 
         const user = insertedUser[0];
@@ -49,7 +50,8 @@ export async function POST(req: Request) {
                 avatarUrl: user.avatarUrl,
                 credits: user.credits,
                 createdAt: user.createdAt,
-                tariff: user.tariff
+                tariff: user.tariff,
+                aiCallCount: user.aiCallCount
             },
         });
 

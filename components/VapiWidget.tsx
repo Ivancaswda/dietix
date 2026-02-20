@@ -12,6 +12,15 @@ import {toast} from "sonner";
 import {useRouter} from "next/navigation";
 import axios from "axios";
 import {v4 as uuidv4} from 'uuid'
+
+const getCallLimit = (user: any) => {
+  if (!user) return 0;
+
+  if (user.tariff === "premium") return Infinity;
+  if (user.tariff === "basic") return 5;
+
+  return 1;
+};
 function VapiWidget() {
   const [showDialog, setShowDialog] = useState(false);
   const [vapiClient, setVapiClient] = useState<Vapi | null>(null);
@@ -25,15 +34,29 @@ function VapiWidget() {
   const visibleMessages = messages.slice(-8);
   const { user, loading, callCount, setCallCount } = useAuth();
   const messageContainerRef = useRef<HTMLDivElement>(null);
+  const callLimit = getCallLimit(user);
+  const callsUsed = user?.aiCallCount ?? 0 ;
 
-  // auto-scroll for messages
+  const limitReached = callsUsed <= 0;
+  console.log(user)
+  console.log('callCount===', callCount)
   useEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
     }
   }, [messages]);
+  const updateCallCount = async () => {
+    try {
+      const newCount = user?.aiCallCount - 1;
 
-  // setup event listeners for VAPI
+      await axios.post("/api/update-call-count", {aiCallCount: newCount });
+      setCallCount(newCount);
+    } catch (error) {
+      toast.error('Не удалось обновить кол-во звонков')
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     if (!vapiClient) return;
 
@@ -52,6 +75,10 @@ function VapiWidget() {
 
     const callId = uuidv4()
 
+      if (user?.tariff !== "premium") {
+        await updateCallCount(); // ✅ ТУТ
+      }
+
       try {
         await axios.post("/api/save-call-history", {
           assistantName: "Тикси AI",
@@ -62,21 +89,9 @@ function VapiWidget() {
         toast.error('Не удалось сохранить историю сообщений звонка!')
         console.error("Failed to save AI call history", error);
       }
-    //  if (user?.isBasic === 1) {
-      //  updateCallCount()
-     // }
-    };
-    const updateCallCount = async () => {
-      try {
-        const newCount = user?.aiCallCount + 1;
 
-        await axios.post("/api/update-call-count", {aiCallCount: newCount });
-        setCallCount(newCount);
-      } catch (error) {
-        toast.error('Не удалось обновить кол-во звонков')
-        console.log(error)
-      }
-    }
+    };
+
 
     const handleSpeechStart = () => setIsSpeaking(true);
     const handleSpeechEnd = () => setIsSpeaking(false);
@@ -126,13 +141,21 @@ function VapiWidget() {
       setShowDialog(true);
       return;
     }
-    //if (user?.isBasic === 1 && user?.aiCallCount > 3) {
-     // toast.error("Вы достигли лимита 3 звонков для Basic тарифа!");
-    //  router.replace('/pricing')
-    //  return;
-   // }
+
+
+    if (limitReached) {
+      toast.error("Вы исчерпали лимит звонков на этом тарифе");
+
+      if (user?.tariff !== "premium") {
+        router.replace("/pricing");
+      }
+
+      return;
+    }
+
 
     try {
+
       setConnecting(true);
       setMessages([]);
       setCallEnded(false);
@@ -322,7 +345,7 @@ function VapiWidget() {
               : "bg-primary hover:bg-primary/90"
           } text-white relative`}
           onClick={toggleCall}
-          disabled={connecting || callEnded || (user?.isBasic === 1 && user?.aiCallCount > 3)}
+          disabled={connecting || callEnded || limitReached}
         >
           {connecting && (
             <span className="absolute inset-0 rounded-full animate-ping bg-primary/50 opacity-75"></span>
@@ -341,7 +364,10 @@ function VapiWidget() {
         </Button>
 
       </div>
-      <p className='text-muted-foreground text-center mt-1 text-sm'>{(user?.isBasic === 1 && user?.aiCallCount > 3) && 'Ваш лимит подписки Basic исчерпан'}</p>
+      <p className="text-muted-foreground text-center mt-1 text-sm">
+        {limitReached && user?.tariff === "free" && "Пробный звонок уже использован"}
+        {limitReached && user?.tariff === "basic" && "Ваш лимит тарифа Basic исчерпан"}
+      </p>
       <VapiApiKeyDialog
           open={showDialog}
           onClose={() => setShowDialog(false)}

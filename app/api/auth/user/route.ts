@@ -32,7 +32,8 @@ export async function GET(req: Request) {
                 avatarUrl: user?.avatarUrl,
                 credits: user?.credits,
                 tariff: user?.tariff,
-                tariffExpiresAt: user?.tariffExpiresAt
+                tariffExpiresAt: user?.tariffExpiresAt,
+                aiCallCount: user.aiCallCount
             },
         })
     } catch (err: any) {

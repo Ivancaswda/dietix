@@ -60,6 +60,7 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
     const {diets, refreshDiets} = useDiets()
     const [pending, setPending] = useState<boolean>()
     const [Diets, setDiets]  = useState(diets || [])
+    const [liveUser, setLiveUser] = useState<any>()
     const getAllDiets = async () => {
         try {
             setPending(true)
@@ -89,7 +90,7 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
     useEffect(() => {
         user && getAllDiets()
     }, []);
-    const handleDelete = async (dietId) => {
+    const handleDelete = async (dietId:any) => {
         try {
             setSkeletonLoading(true)
             const {data} =await axios.delete(`/api/diets/delete?dietId=${dietId}`)
@@ -108,7 +109,18 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
             toast.error('Не удалось удалить проект')
         }
     }
-    const creditsLeft = user?.credits ?? 0;
+    useEffect(() => {
+        user && fetchFreshUser()
+    }, [user])
+    const fetchFreshUser = async () => {
+        try {
+            const { data } = await axios.get("/api/auth/user");
+            setLiveUser(data.user);
+        } catch (e) {
+            console.log("fresh user error", e);
+        }
+    };
+    const creditsLeft = liveUser?.credits ?? 0;
 
 
     const MAX_UI = 10;
@@ -233,8 +245,8 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
                         <div className='flex justify-between px-2 items-center gap-4'>
                             <p className='font-semibold'>Ваш тариф:</p>
 
-                            <Button variant={user?.tariff ==='premium' ? 'secondary' : user?.tariff === 'basic' ? 'destructive' : 'outline'}>
-                                {user?.tariff === 'premium' ? 'Премиум' : user?.tariff === 'basic' ? 'Basic' : 'Free'}
+                            <Button variant={liveUser?.tariff ==='premium' ? 'secondary' : liveUser?.tariff === 'basic' ? 'destructive' : 'outline'}>
+                                {liveUser?.tariff === 'premium' ? 'Премиум' : liveUser?.tariff === 'basic' ? 'Basic' : 'Free'}
                             </Button>
                         </div>
                         <div className="px-2 space-y-2">

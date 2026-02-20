@@ -8,8 +8,9 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {FaMagic} from "react-icons/fa";
+import {useAuth} from "@/app/context/useAuth";
 
-const REQUIRED_FIELDS: Record<string, string> = {
+const BASE_REQUIRED_FIELDS: Record<string, string> = {
     goal: "Цель",
     height: "Рост",
     weight: "Вес",
@@ -19,7 +20,6 @@ const REQUIRED_FIELDS: Record<string, string> = {
     protein: "Белки",
     fat: "Жиры",
     carbs: "Углеводы",
-    apiKey: "Gemini API Key",
 };
 
 export default function FinishStep({
@@ -33,12 +33,25 @@ export default function FinishStep({
 }) {
     const [isGenerating, setIsGenerating] = useState(false);
     const router = useRouter();
+    const {user} = useAuth()
+    const requiredFields = useMemo(() => {
+        const fields = { ...BASE_REQUIRED_FIELDS };
 
+        const hasSubscription =
+            user?.tariff && user.tariff !== "free";
+
+        if (!hasSubscription) {
+            fields.apiKey = "Gemini API Key";
+        }
+
+        return fields;
+    }, [user]);
     const missingFields = useMemo(() => {
-        return Object.entries(REQUIRED_FIELDS)
+        return Object.entries(requiredFields)
             .filter(([key]) => !data?.[key])
             .map(([, label]) => label);
-    }, [data]);
+    }, [data, requiredFields]);
+
     useEffect(() => {
         document.body.style.overflow = isGenerating ? "hidden" : "auto";
     }, [isGenerating]);
@@ -55,7 +68,11 @@ export default function FinishStep({
 
         try {
             setIsGenerating(true);
+            const payloadData = { ...data };
 
+            if (user?.tariff && user.tariff !== "free") {
+                delete payloadData.apiKey;
+            }
             await axios.post("/api/diets/generate", {
                 dietId,
                 data,
@@ -63,7 +80,12 @@ export default function FinishStep({
 
             toast.success("Рацион успешно сгенерирован!");
             router.replace(`/diet-view/${dietId}`);
-        } catch (e) {
+        } catch (e: any) {
+            if (e?.response?.data?.error === "NO_CREDITS") {
+                toast.error("У вас закончились кредиты 😢");
+                router.push('/pricing')
+                return;
+            }
             toast.error("Ошибка генерации рациона");
         } finally {
             setIsGenerating(false);

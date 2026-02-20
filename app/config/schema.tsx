@@ -9,7 +9,8 @@ export const usersTable = pgTable('users', {
     createdAt: varchar(),
     avatarUrl: varchar(),
     tariff: varchar(),
-    tariffExpiresAt: timestamp()
+    tariffExpiresAt: timestamp(),
+    aiCallCount: integer()
 })
 
 export const dietsTable = pgTable('diets', {

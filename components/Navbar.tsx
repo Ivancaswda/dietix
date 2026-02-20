@@ -39,7 +39,7 @@ const Navbar = () => {
                         Рабочая панель
                     </Link>
                     <Link href="/voice" className="text-sm text-muted-foreground hover:text-foreground transition">
-                        Голосовой помощник
+                        Тикси AI
                     </Link>
                     <Link href="/call-history" className="text-sm text-muted-foreground hover:text-foreground transition">
                         История звонков
