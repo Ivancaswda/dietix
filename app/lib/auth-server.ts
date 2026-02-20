@@ -16,6 +16,7 @@ async function getServerUser() {
             userName: string,
             id: string,
             credits: number
+            tariff: string
         }
         return decoded!
     } catch (err) {

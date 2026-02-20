@@ -1,6 +1,7 @@
+export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import YooKassa from "yookassa";
-
+import crypto from "crypto";
 const yooKassa = new YooKassa({
     shopId: process.env.YOOKASSA_SHOP_ID!,
     secretKey: process.env.YOOKASSA_SECRET_KEY!,
@@ -27,21 +28,21 @@ export async function POST(req: NextRequest) {
         let description = "";
         let metadata: any = { email, type };
 
-        // 💎 Подписка
+
         if (type === "plan" && plan) {
             amount = PLAN_PRICES[plan];
             description = `Подписка ${plan}`;
             metadata.plan = plan;
         }
 
-        // ⭐ Кредиты
+
         if (type === "credits" && credits) {
             amount = CREDIT_PACKS[credits];
             description = `Покупка ${credits} звезд`;
             metadata.credits = credits;
         }
 
-        // ❗ защита от undefined
+
         if (!amount) {
             return NextResponse.json(
                 { error: "Invalid payment data" },

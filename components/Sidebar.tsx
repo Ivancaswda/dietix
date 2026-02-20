@@ -18,7 +18,7 @@ import {
     EmptyMedia,
     EmptyTitle,
 } from "@/components/ui/empty"
-import {ArrowUpRightIcon, EditIcon, LogOutIcon, MoreVertical, Trash2Icon, UserIcon} from "lucide-react";
+import {ArrowUpRightIcon, EditIcon, LogOutIcon, MoreVertical, Stars, Trash2Icon, UserIcon} from "lucide-react";
 import {FaCrow, FaCrown, FaFolder} from "react-icons/fa";
 
 import {Progress} from "@/components/ui/progress";
@@ -108,54 +108,54 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
             toast.error('Не удалось удалить проект')
         }
     }
+    const creditsLeft = user?.credits ?? 0;
 
+
+    const MAX_UI = 10;
+
+    const percent = Math.min((creditsLeft / MAX_UI) * 100, 100);
 
     return (
 
-            <Sidebar collapsible="none" className='' style={{marginTop: '70px'}}  >
-                <SidebarHeader className='px-5 py-2 ' >
+        <Sidebar collapsible="none" className="h-screen flex flex-col">
+                <Dialog>
 
-
-                    <Dialog>
-
-                        <DialogTrigger asChild>
-                            <Button  className='w-full '>
-                                + Добавить диету
+                    <DialogTrigger asChild>
+                        <Button  className='w-full '>
+                            + Добавить диету
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-sm">
+                        <DialogHeader>
+                            <DialogTitle>Создать новую диету</DialogTitle>
+                            <DialogDescription>
+                                Заполните минимальные данные чтобы начать пользоваться нашим серисом
+                            </DialogDescription>
+                        </DialogHeader>
+                        <FieldGroup>
+                            <Field>
+                                <Label htmlFor="name-1">Название</Label>
+                                <Input onChange={(e) => setName(e.target.value)} value={name} id="name-1" name="name" placeholder="Моя Первая Диета" />
+                            </Field>
+                            <Field>
+                                <Label htmlFor="desc-1">Описание</Label>
+                                <Input onChange={(e) => setDesc(e.target.value)} value={desc} id="desc-1" name="desc" placeholder="Диета для похудения в быстром сроке" />
+                            </Field>
+                        </FieldGroup>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="outline">Отменить</Button>
+                            </DialogClose>
+                            <Button disabled={isCreating} type="button" onClick={handleDietCreate}>
+                                {isCreating ? 'Подождите...' : 'Создать диету'}
                             </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-sm">
-                            <DialogHeader>
-                                <DialogTitle>Создать новую диету</DialogTitle>
-                                <DialogDescription>
-                                    Заполните минимальные данные чтобы начать пользоваться нашим серисом
-                                </DialogDescription>
-                            </DialogHeader>
-                            <FieldGroup>
-                                <Field>
-                                    <Label htmlFor="name-1">Название</Label>
-                                    <Input onChange={(e) => setName(e.target.value)} value={name} id="name-1" name="name" placeholder="Моя Первая Диета" />
-                                </Field>
-                                <Field>
-                                    <Label htmlFor="desc-1">Описание</Label>
-                                    <Input onChange={(e) => setDesc(e.target.value)} value={desc} id="desc-1" name="desc" placeholder="Диета для похудения в быстром сроке" />
-                                </Field>
-                            </FieldGroup>
-                            <DialogFooter>
-                                <DialogClose asChild>
-                                    <Button variant="outline">Отменить</Button>
-                                </DialogClose>
-                                <Button disabled={isCreating} type="button" onClick={handleDietCreate}>
-                                    {isCreating ? 'Подождите...' : 'Создать диету'}
-                                </Button>
-                            </DialogFooter>
-                        </DialogContent>
+                        </DialogFooter>
+                    </DialogContent>
 
-                    </Dialog>
+                </Dialog>
+            <SidebarContent className="flex flex-col h-full">
 
-
-
-                </SidebarHeader>
-                <SidebarContent className='flex flex-col justify-between'>
+                <div className="flex-1 overflow-y-auto px-1">
                     <SidebarGroup>
                         {skeletonLoading ? (
 
@@ -228,14 +228,29 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
                             ))
                         )}
                     </SidebarGroup>
+                </div>
 
-                    <div className="p-3 mb-18 border rounded-xl flex-col flex gap-4 bg-secondary">
+                <div className="p-3 border-t bg-secondary flex flex-col gap-4 mt-auto">
                         <div className='flex justify-between px-2 items-center gap-4'>
                             <p className='font-semibold'>Ваш тариф:</p>
 
-                            <Button variant={user?.isPremium ? 'secondary' : user?.isBasic ? 'destructive' : 'outline'}>
-                                {user?.isPremium ? 'Премиум' : user?.isBasic ? 'Basic' : 'Free'}
+                            <Button variant={user?.tariff ==='premium' ? 'secondary' : user?.tariff === 'basic' ? 'destructive' : 'outline'}>
+                                {user?.tariff === 'premium' ? 'Премиум' : user?.tariff === 'basic' ? 'Basic' : 'Free'}
                             </Button>
+                        </div>
+                        <div className="px-2 space-y-2">
+                            <div className="flex justify-between text-xs text-muted-foreground">
+                                <span className='flex items-center gap-4'>Звезды <Stars/></span>
+                                <span>{creditsLeft} осталось</span>
+                            </div>
+
+                            <Progress value={percent} className="h-2" />
+
+                            {creditsLeft === 0 && (
+                                <p className="text-xs text-primary">
+                                    Звезды закончились
+                                </p>
+                            )}
                         </div>
 
 
@@ -261,7 +276,7 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem asChild>
                                         <Link
-                                                    onClick={() => onClose?.()} href="/profile" className="flex items-center gap-2">
+                                            onClick={() => onClose?.()} href="/profile" className="flex items-center gap-2">
                                             <UserIcon size={16} /> Профиль
                                         </Link>
                                     </DropdownMenuItem>
@@ -276,7 +291,7 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
                             </DropdownMenu>
 
                             <Link
-                                        onClick={() => onClose?.()} href='/pricing'>
+                                onClick={() => onClose?.()} href='/pricing'>
                                 <Button className='w-full flex items-center gap-2'>
                                     <FaCrown/> Обновить тариф
                                 </Button>
@@ -284,9 +299,7 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
                         </div>
                     </div>
                 </SidebarContent>
-                <SidebarFooter>
 
-                </SidebarFooter>
 
             </Sidebar>
 

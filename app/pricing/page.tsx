@@ -103,10 +103,10 @@ export default function PricingPage() {
 
     };
 
-    const currentPlan = user?.isPremium
-        ? "premium"
-        : user?.isBasic
-            ? "basic"
+    const currentPlan = user?.tariff === 'basic'
+        ? "basic"
+        : user?.tariff === 'premium'
+            ? "premium"
             : "free";
     if (loading && !user) {
         return  <div className='flex items-center justify-center w-screen h-screen'>
@@ -166,7 +166,7 @@ export default function PricingPage() {
                                     </Button>
                                 ) : (
                                     <Button disabled className="mt-4 w-full">
-                                        Текущий тариф
+                                        Уже есть
                                     </Button>
                                 )}
                             </div>

@@ -23,6 +23,7 @@ import Link from "next/link";
 import {formatRelativeTime} from "@/app/lib/utils";
 import FloatingAssistant from "@/components/FloatingAssistant";
 import {useDiets} from "@/app/context/DietsContext";
+import TariffBanner from "@/components/TariffBanner";
 
 const DashboardPage = () => {
     const router = useRouter();
@@ -126,7 +127,7 @@ const DashboardPage = () => {
                     </section>
                 </>
             ) : <>
-            <section className="space-y-4">
+                <section className="space-y-4">
                 <h2 className="text-2xl font-semibold">Черновики диет</h2>
 
 
@@ -204,8 +205,7 @@ const DashboardPage = () => {
                 </div>
             )}
             </section>
-
-
+                    <TariffBanner/>
                 <section className="space-y-4">
                 <h2 className="text-2xl font-semibold">Активные диеты</h2>
             {completed.length === 0 ? (

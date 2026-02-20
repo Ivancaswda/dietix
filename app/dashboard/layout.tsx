@@ -45,15 +45,15 @@ export default function DashboardLayout({ children }) {
                     <div className="flex flex-1 w-screen relative">
 
 
-                        <aside className="w-[280px] md:block  hidden border-r">
+                        <aside className="w-[280px] md:block hidden border-r fixed left-0 top-0 h-screen">
 
                             <SidebarComponent setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
                         </aside>
 
-                        {/* Mobile overlay sidebar */}
+
                         {sidebarOpen && (
                             <>
-                                {/* Backdrop */}
+
                                 <div
                                     className="fixed inset-0 bg-black/40 z-40 md:hidden"
                                     onClick={() => setSidebarOpen(false)}
@@ -70,7 +70,7 @@ export default function DashboardLayout({ children }) {
                         )}
 
                         {/* Main content */}
-                        <main className="flex-1 w-full overflow-y-auto">
+                        <main className="flex-1 w-full overflow-y-auto md:ml-[280px]">
                             {children}
                         </main>
                     </div>
