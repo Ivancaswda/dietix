@@ -2,6 +2,7 @@
 
 import Script from "next/script";
 import { useEffect, useRef } from "react";
+import {useAuth} from "@/app/context/useAuth";
 
 declare global {
     interface Window {
@@ -11,7 +12,7 @@ declare global {
 
 const VkButton = () => {
     const containerRef = useRef<HTMLDivElement>(null);
-
+    const {user, setUser} = useAuth()
     useEffect(() => {
         if (!window.VKIDSDK || !containerRef.current) return;
 
@@ -79,7 +80,7 @@ const VkButton = () => {
 
                         console.log("VK LOGIN SUCCESS", data);
 
-                        window.location.href = "/dashboard";
+                        setUser(data.user)
                     } catch (e) {
                         console.error("VK AUTH ERROR:", e);
                     }
