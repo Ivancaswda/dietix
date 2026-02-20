@@ -34,6 +34,7 @@ export async function POST(req: Request) {
         password: hashedPassword,
         credits: 1,
         createdAt: new Date().toISOString(),
+        tariff: 'free'
     }).returning()
 
     const user = insertedUser[0]

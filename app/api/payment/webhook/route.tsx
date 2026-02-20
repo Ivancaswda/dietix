@@ -1,32 +1,54 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/app/config/db";
-import {dietsTable, usersTable} from "@/app/config/schema";
-import {and, eq} from "drizzle-orm";
+import { usersTable } from "@/app/config/schema";
+import { eq } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
 
-    console.log("Webhook:", body);
+    if (body.event !== "payment.succeeded") {
+        return NextResponse.json({ ok: true });
+    }
 
-    if (body.event === "payment.succeeded") {
-        const payment = body.object;
-        const plan = payment.metadata.plan;
-        const email = payment.metadata.email;
+    const payment = body.object;
+    const meta = payment.metadata;
 
-        // 🔥 Тут обновляешь пользователя в БД
-        console.log("Оплачен тариф:", plan, email);
+    const email = meta.email;
+
+    const user = await db
+        .select()
+        .from(usersTable)
+        .where(eq(usersTable.email, email))
+        .limit(1)
+        .then((r) => r[0]);
+
+    if (!user) return NextResponse.json({ ok: true });
+
+
+    if (meta.type === "credits") {
+        const creditsToAdd = Number(meta.credits || 0);
 
         await db
             .update(usersTable)
             .set({
-                credits: 10
+                credits: (user.credits || 0) + creditsToAdd,
             })
-            .where(
-                 eq(usersTable.email, email),
+            .where(eq(usersTable.email, email));
+    }
 
 
-            );
+    if (meta.type === "plan") {
+        const plan = meta.plan;
 
+        const expiresAt = new Date();
+        expiresAt.setMonth(expiresAt.getMonth() + 1); // +1 месяц
+
+        await db
+            .update(usersTable)
+            .set({
+                tariff: plan
+            })
+            .where(eq(usersTable.email, email));
     }
 
     return NextResponse.json({ ok: true });

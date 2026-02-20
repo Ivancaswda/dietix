@@ -31,6 +31,7 @@ export async function POST(req: Request) {
             email,
             password: hashedPassword,
             credits: 1,
+            tariff: 'free',
             avatarUrl: null,
             createdAt: new Date().toISOString(),
         }).returning();
@@ -47,6 +48,7 @@ export async function POST(req: Request) {
                 avatarUrl: user.avatarUrl,
                 credits: user.credits,
                 createdAt: user.createdAt,
+                tariff: user.tariff
             },
         });
 
@@ -55,7 +57,7 @@ export async function POST(req: Request) {
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
             path: "/",
-            maxAge: 60 * 60 * 24 * 7, // 1 неделя
+            maxAge: 60 * 60 * 24 * 7,
         });
 
         return res;

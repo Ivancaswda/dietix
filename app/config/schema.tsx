@@ -7,7 +7,8 @@ export const usersTable = pgTable('users', {
     password: varchar("password", { length: 255 }).notNull(),
     credits: integer().default(1),
     createdAt: varchar(),
-    avatarUrl: varchar()
+    avatarUrl: varchar(),
+    tariff: varchar()
 })
 
 export const dietsTable = pgTable('diets', {
@@ -42,7 +43,8 @@ export const dietMealsTable = pgTable('diet_meals', {
 
     dietId: integer().references(() => dietsTable.dietId),
 
-    mealId: integer().references(() => mealsTable.id),
+    mealId: integer("mealId")
+        .references(() => mealsTable.id, { onDelete: "cascade" }),
 
     mealType: varchar(),
 
@@ -67,7 +69,7 @@ export const mealsTable = pgTable('meals', {
 
 export const mealIngredientsTable = pgTable('meal_ingredients', {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    mealId: integer().references(() => mealsTable.id),
+    mealId: integer().references(() => mealIngredientsTable.id, { onDelete: "cascade" }),
     ingredientName: varchar(),
     grams: integer(),
     calories: integer(),

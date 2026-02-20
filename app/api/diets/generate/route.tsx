@@ -166,7 +166,7 @@ ${JSON.stringify(data.eatenMeals)}
         for (const meal of parsed.meals) {
             const imageUrl = await getMealImage(meal.name);
 
-            const youtubeVideo = await getYoutubeVideos(meal.name);
+            const vkVideos = await getVkVideos(meal.name);
 
             const [mealRow] = await db
                 .insert(mealsTable)
@@ -178,7 +178,7 @@ ${JSON.stringify(data.eatenMeals)}
                     fat: meal.fat,
                     carbs: meal.carbs,
                     imageUrl: imageUrl,
-                    youtubeVideo: JSON.stringify(youtubeVideo),
+                    youtubeVideo: JSON.stringify(vkVideos),
                 })
                 .returning();
 
@@ -232,25 +232,27 @@ ${JSON.stringify(data.eatenMeals)}
         );
     }
 }
-const YOUTUBE_BASE_URL = "https://www.googleapis.com/youtube/v3/search";
+const VK_VIDEO_URL = "https://api.vk.com/method/video.search";
 
-export const getYoutubeVideos = async (query: string) => {
-    const params = {
-        part: "snippet",
-        q: query,
-        maxResults: 3,
-        type: "video",
-        key: process.env.YOUTUBE_API_KEY,
-    };
-
+export const getVkVideos = async (query: string) => {
     try {
-        const resp = await axios.get(YOUTUBE_BASE_URL, { params });
-        return resp.data.items.map((item: any) => ({
-            videoId: item.id?.videoId,
-            title: item.snippet?.title,
+        const resp = await axios.get(VK_VIDEO_URL, {
+            params: {
+                q: `${query} рецепт`,
+                count: 3,
+                access_token: process.env.VK_ACCESS_TOKEN,
+                v: process.env.VK_API_VERSION || "5.199",
+            },
+        });
+
+        const items = resp.data?.response?.items || [];
+
+        return items.map((video: any) => ({
+            title: video.title,
+            player: video.player,
         }));
     } catch (error) {
-        console.error("❌ Error fetching YouTube videos:", error);
+        console.error("❌ VK video error:", error);
         return [];
     }
 };

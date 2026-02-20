@@ -61,6 +61,7 @@ export async function POST(req: Request) {
                     credits: 1,
                     avatarUrl: avatar,
                     createdAt: new Date().toISOString(),
+                    tariff: 'free'
                 })
                 .returning();
 
@@ -89,6 +90,7 @@ export async function POST(req: Request) {
                 userName: user.name,
                 avatarUrl: user.avatarUrl,
                 credits: user.credits,
+                tariff: 'free'
             },
         });
 

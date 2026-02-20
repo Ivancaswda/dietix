@@ -22,7 +22,7 @@ const VkButton = () => {
             redirectUrl: window.location.origin,
             responseMode: VKID.ConfigResponseMode.Callback,
             source: VKID.ConfigSource.LOWCODE,
-            scope: "",
+            scope: "email", // если нужно
         });
 
         const oneTap = new VKID.OneTap();
@@ -31,42 +31,67 @@ const VkButton = () => {
             .render({
                 container: containerRef.current,
                 showAlternativeLogin: true,
-                styles: {
-                    borderRadius: 10,
-                    height: 40,
-                },
             })
             .on(VKID.WidgetEvents.ERROR, (e: any) => {
-                console.error("VK error", e);
+                console.error("VK ERROR:", e);
             })
-            .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, async (payload: any) => {
-                try {
-                    const { code, device_id } = payload;
+            .on(
+                VKID.OneTapInternalEvents.LOGIN_SUCCESS,
+                async (payload: any) => {
+                    try {
+                        const { code, device_id } = payload;
 
-                    const data = await VKID.Auth.exchangeCode(code, device_id);
+                        // 🔥 получаем access_token
+                        const tokenData = await VKID.Auth.exchangeCode(
+                            code,
+                            device_id
+                        );
 
-                    console.log("VK SUCCESS", data);
+                        /*
+                          tokenData содержит:
+                          access_token
+                          refresh_token
+                          id_token
+                          user_id
+                          expires_in
+                        */
 
+                        console.log("VK TOKEN DATA:", tokenData);
 
-                    await fetch("/api/auth/vk", {
-                        method: "POST",
-                        body: JSON.stringify(data),
-                    });
-                } catch (e) {
-                    console.error("VK auth error", e);
+                        // 👉 отправляем в свой API
+                        const res = await fetch("/api/auth/vk", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                access_token: tokenData.access_token,
+                                user_id: tokenData.user_id,
+                            }),
+                        });
+
+                        const data = await res.json();
+
+                        if (!res.ok) {
+                            throw new Error(data.error);
+                        }
+
+                        console.log("VK LOGIN SUCCESS", data);
+
+                        window.location.href = "/dashboard";
+                    } catch (e) {
+                        console.error("VK AUTH ERROR:", e);
+                    }
                 }
-            });
+            );
     }, []);
 
     return (
-        <div className='mt-4'>
-
+        <div className="mt-4">
             <Script
                 src="https://unpkg.com/@vkid/sdk@2/dist-sdk/umd/index.js"
                 strategy="afterInteractive"
             />
-
-            {/* Контейнер кнопки */}
             <div ref={containerRef} />
         </div>
     );

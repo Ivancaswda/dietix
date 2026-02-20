@@ -87,9 +87,9 @@ const DietViewPage = () => {
                                                     <div key={i} className="w-full aspect-video">
                                                         <iframe
                                                             className="w-full h-full rounded-lg"
-                                                            src={`https://www.youtube.com/embed/${video.videoId}`}
+                                                            src={video.player}
                                                             title={video.title}
-                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                            allow="autoplay; encrypted-media; fullscreen"
                                                             allowFullScreen
                                                         />
                                                     </div>
