@@ -85,9 +85,9 @@ function safeJsonParse(text: string) {
 }
 export async function POST(req: NextRequest) {
     try {
-        const { dietId, data} = await req.json();
+        const { dietId, data, regenerate} = await req.json();
         const user = await getServerUser();
-
+        console.log('data', data)
         if (!user) {
             return NextResponse.json({ error: "Not authorized" }, { status: 401 });
         }
@@ -121,6 +121,19 @@ export async function POST(req: NextRequest) {
             })
             .where(eq(dietsTable.dietId, dietId))
             .returning();
+        if (regenerate) {
+            const existingMeals = await db
+                .select({ mealId: dietMealsTable.mealId })
+                .from(dietMealsTable)
+                .where(eq(dietMealsTable.dietId, diet.id));
+
+            const ids = existingMeals.map(m => m.mealId);
+
+            if (ids.length) {
+                await db.delete(dietMealsTable).where(eq(dietMealsTable.dietId, diet.id));
+
+            }
+        }
 
 
         const prompt = `
@@ -167,7 +180,7 @@ ${JSON.stringify(data.eatenMeals)}
             const imageUrl = await getMealImage(meal.name);
 
             const vkVideos = await getVkVideos(meal.name);
-
+            console.log('vkVideos====', vkVideos)
             const [mealRow] = await db
                 .insert(mealsTable)
                 .values({

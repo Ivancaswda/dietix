@@ -40,6 +40,7 @@ export async function POST(req: Request) {
                     credits: 1,
                     avatarUrl: picture,
                     createdAt: new Date().toISOString(),
+                    tariffExpiresAt: null
                 })
                 .returning();
             user = inserted[0];

@@ -41,7 +41,7 @@ export function InfoDietCarousel() {
         },
     ];
 
-    return  <div style={{backgroundColor: '#edffea'}} className='overflow-x-hidden w-screen'>
+    return  <div style={{backgroundColor: '#edffea'}} className='overflow-x-hidden max-w-screen'>
         <div className="absolute z-20 hidden lg:block h-[500px] w-[500px] bg-primary blur-[140px] rounded-full top-40 -left-40" />
         <div className="absolute z-20 hidden lg:block h-[400px] w-[400px] bg-primary blur-[140px] rounded-full bottom-4 right-10" />
         <AnimatedTestimonials testimonials={features} />

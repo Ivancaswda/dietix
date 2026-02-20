@@ -117,7 +117,7 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
 
     return (
 
-        <Sidebar collapsible="none" className="h-screen flex flex-col">
+        <Sidebar collapsible="none" className="h-screen mt-4 flex flex-col">
                 <Dialog>
 
                     <DialogTrigger asChild>
@@ -163,7 +163,6 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
                                 <Skeleton key={index} className='h-10 w-full rounded-lg mt-2' />
                             ))
                         ) : diets?.length === 0 ? (
-
                             <Empty>
                                 <EmptyHeader>
                                     <EmptyMedia variant="icon">
@@ -240,7 +239,7 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
                         </div>
                         <div className="px-2 space-y-2">
                             <div className="flex justify-between text-xs text-muted-foreground">
-                                <span className='flex items-center gap-4'>Звезды <Stars/></span>
+                                <span className='flex items-center gap-4'>Звезды <Stars className='size-4'/></span>
                                 <span>{creditsLeft} осталось</span>
                             </div>
 

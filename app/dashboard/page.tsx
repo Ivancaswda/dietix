@@ -128,83 +128,77 @@ const DashboardPage = () => {
                 </>
             ) : <>
                 <section className="space-y-4">
-                <h2 className="text-2xl font-semibold">Черновики диет</h2>
-
-
-
-
-
-
-            {drafts.length === 0 ? (
-                <Empty>
-                    <EmptyHeader>
-                        <EmptyMedia variant="icon">
-                            <FaBowlFood className="text-primary" />
-                        </EmptyMedia>
-                        <EmptyTitle>Нет данных</EmptyTitle>
-                        <EmptyDescription>Черновики не найдены</EmptyDescription>
-                    </EmptyHeader>
-                </Empty>
-            ) : (
-                <div className="flex flex-wrap  gap-6 w-full">
-                    {drafts.map((diet) => (
-                        <Link href={`/diets/${diet.dietId}`}>
-                            <Card  key={diet.dietId} className="border-dashed">
-                                <CardContent className="p-5 space-y-2">
-                                    <div className="flex items-start justify-between">
-                                        <div>
-                                    <div className="flex gap-4 items-center justify-between">
-                                        <h3 className="text-lg font-medium">{diet.name}</h3>
-                                        <Badge variant="secondary">Не настроена</Badge>
-                                    </div>
-                                    <p className="text-sm text-muted-foreground">{diet.notes}</p>
-                                    <p className="text-xs text-muted-foreground">Создана: {formatRelativeTime(diet.createdOn)}</p>
-                                        </div>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger>
-                                                <Button  onClick={(e) => {
-                                                    e.preventDefault()
-                                                    e.stopPropagation()
-                                                }} variant="ghost">
-                                                    <MoreVertical />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent>
-                                                <div className="flex flex-col p-4 gap-3">
-                                                    <Button
-                                                        variant="ghost"
-                                                        onClick={() =>  router.push(`/diet-view/${diet.dietId}`)}
-                                                        className="flex items-center gap-2 text-gray-700"
-                                                    >
-                                                        <TableConfigIcon size={18} /> Открыть
-                                                    </Button>
-
-                                                    <Button onClick={(e) => {
-                                                        e.preventDefault()
-                                                        e.stopPropagation()
-                                                    }} variant='ghost'>
-                                                        <EditDietDialog  diet={diet} onUpdated={() => getAllDiets()} />
-                                                    </Button>
-
-                                                    <Button onClick={(e) => {
-                                                        e.preventDefault()
-                                                        e.stopPropagation()
-                                                    }} variant='ghost'>
-                                                        <DeleteDietAlert dietId={diet.dietId} />
-                                                    </Button>
-
-
+                    <h2 className="text-2xl font-semibold">Черновики диет</h2>
+                        {drafts.length === 0 ? (
+                            <Empty>
+                                <EmptyHeader>
+                                    <EmptyMedia variant="icon">
+                                        <FaBowlFood className="text-primary" />
+                                    </EmptyMedia>
+                                    <EmptyTitle>Нет данных</EmptyTitle>
+                                    <EmptyDescription>Черновики не найдены</EmptyDescription>
+                                </EmptyHeader>
+                            </Empty>
+                        ) : (
+                            <div className="flex flex-wrap  gap-6 w-full">
+                                {drafts.map((diet) => (
+                                    <Link href={`/diets/${diet.dietId}`}>
+                                        <Card  key={diet.dietId} className="border-dashed">
+                                            <CardContent className="p-5 space-y-2">
+                                                <div className="flex items-start justify-between">
+                                                    <div>
+                                                <div className="flex gap-4 items-center justify-between">
+                                                    <h3 className="text-lg font-medium">{diet.name}</h3>
+                                                    <Badge variant="secondary">Не настроена</Badge>
                                                 </div>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    ))}
-                </div>
-            )}
-            </section>
+                                                <p className="text-sm text-muted-foreground">{diet.notes}</p>
+                                                <p className="text-xs text-muted-foreground">Создана: {formatRelativeTime(diet.createdOn)}</p>
+                                                    </div>
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger>
+                                                            <Button  onClick={(e) => {
+                                                                e.preventDefault()
+                                                                e.stopPropagation()
+                                                            }} variant="ghost">
+                                                                <MoreVertical />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent>
+                                                            <div className="flex flex-col p-4 gap-3">
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    onClick={() =>  router.push(`/diet-view/${diet.dietId}`)}
+                                                                    className="flex items-center gap-2 text-gray-700"
+                                                                >
+                                                                    <TableConfigIcon size={18} /> Открыть
+                                                                </Button>
+
+                                                                <Button onClick={(e) => {
+                                                                    e.preventDefault()
+                                                                    e.stopPropagation()
+                                                                }} variant='ghost'>
+                                                                    <EditDietDialog  diet={diet} onUpdated={() => getAllDiets()} />
+                                                                </Button>
+
+                                                                <Button onClick={(e) => {
+                                                                    e.preventDefault()
+                                                                    e.stopPropagation()
+                                                                }} variant='ghost'>
+                                                                    <DeleteDietAlert dietId={diet.dietId} />
+                                                                </Button>
+
+
+                                                            </div>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+                </section>
                     <TariffBanner/>
                 <section className="space-y-4">
                 <h2 className="text-2xl font-semibold">Активные диеты</h2>

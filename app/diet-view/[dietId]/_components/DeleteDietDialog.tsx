@@ -36,7 +36,7 @@ export function DeleteDietAlert({ dietId }: { dietId: string }) {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="destructive">
+                <Button className='cursor-pointer transition-all hover:scale-105 hover:bg-red-500' variant="destructive">
                     <TrashIcon />
                     Удалить
                 </Button>

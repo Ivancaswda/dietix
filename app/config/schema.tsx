@@ -8,7 +8,8 @@ export const usersTable = pgTable('users', {
     credits: integer().default(1),
     createdAt: varchar(),
     avatarUrl: varchar(),
-    tariff: varchar()
+    tariff: varchar(),
+    tariffExpiresAt: timestamp()
 })
 
 export const dietsTable = pgTable('diets', {

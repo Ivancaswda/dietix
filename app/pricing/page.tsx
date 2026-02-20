@@ -15,39 +15,43 @@ const plans = [
     {
         name: "Free",
         price: 0,
-        description: "Базовый доступ",
+        description: "Базовый доступ к Dietix",
         perks: [
-            "0 звонков с AI Диетикс",
-            "Ограниченная возможность брони стоматологов (3)",
-            "Стандартная поддержка",
+            "1 генерация диеты в день",
+            "Требуется свой Gemini API ключ",
+            "Базовые шаблоны диет",
+            "Обычная поддержка",
         ],
         key: "free",
     },
     {
-        name: "Basic",
+        name: "Basic (1 месяц)",
         price: 990,
-        description: "Для активных пользователей",
+        description: "Лучший выбор для активного использования Dietix",
         perks: [
-            "До 3 звонков с AI Диетикс",
-            "Безграничная возможность брони стоматологов",
-            "Поддержка отвечает на 20% быстрее",
-            "Улучшенные рекомендации и интерфейс сайта",
-            "Подписка оформляется навсегда (в случае удаления аккаунта, деньги не возвращаются)"
+            "Без Gemini API ключа (встроенный AI)",
+            "Умные персонализированные диеты",
+            "История и сохранение планов питания",
+            "Быстрые обновления и новые функции",
+            "Приоритетная поддержка",
         ],
         key: "basic",
+        duration: "1 месяц"
     },
     {
-        name: "Premium",
-        price: 1990,
-        description: "Полный доступ ко всем функциям",
+        name: "Premium (3 месяца)",
+        price: 2490,
+        description: "Максимальная выгода и полный доступ",
         perks: [
-            "Неограниченные звонки с AI Диетикс",
-            "Полный доступ к бронированию стоматологов",
-            "Приоритетная поддержка",
-            "Эксклюзивные функции и рекомендации",
-            "Подписка оформляется навсегда (в случае удаления аккаунта, деньги не возвращаются )"
+            "Все функции basic",
+            "Подписка сразу на 3 месяца (выгоднее)",
+            "Ранний доступ к новым AI-функциям",
+            "Продвинутые диеты (кето, веган, спорт)",
+            "Глубокая персонализация под цели",
+            "VIP поддержка 24/7",
         ],
         key: "premium",
+        duration: "3 месяца"
     },
 ];
 const creditOptions = [
@@ -118,13 +122,18 @@ export default function PricingPage() {
         <div className="min-h-screen bg-gray-50 flex flex-col items-center py-16 px-4">
 
             <div className="text-center mb-12 mt-6">
-                <h1 className="text-4xl  lg:text-5xl font-bold mb-4">
-                    Выберите тариф
+                <h1 className="text-4xl lg:text-5xl font-bold mb-4">
+                    Выберите тариф Dietix
                 </h1>
+
                 <p className="text-sm text-muted-foreground text-gray-700 max-w-xl mx-auto">
-                    Оплата осуществляется безопасно через ЮKassa.  Начните с бесплатного,
-                    затем улучшите тариф для получения дополнительных возможностей с AI Диетикс
-                    и бронированием стоматологов.
+                    Оплата осуществляется через сервис <a className='text-primary font-semibold' target="_blank" href="https://yookassa.ru">
+                    Юкасса
+                </a>.
+                    <br/>
+                    Получите доступ к AI-генератору персональных диет.
+                    Обновитесь до Pro, чтобы использовать Dietix без API ключей,
+                    получать более точные рекомендации и приоритетную поддержку.
                 </p>
             </div>
 
@@ -141,8 +150,8 @@ export default function PricingPage() {
                             >
                                 <div>
                                     <h2 className="text-2xl font-semibold mb-2 ">{p.name}</h2>
-                                    <p className="text-gray-600 mb-4 text-muted-foreground">{p.description}</p>
-                                    <p className="text-3xl font-bold mb-4">{p.price}</p>
+                                    <p className="text-gray-600 mb-4 ">{p.description}</p>
+                                    <p className="text-3xl font-bold mb-4">{p.price}р.</p>
                                     <ul className="text-gray-700 mb-4 space-y-2">
                                         {p.perks.map((perk, i) => (
                                             <li key={i} className="flex text-muted-foreground items-center">
@@ -185,7 +194,7 @@ export default function PricingPage() {
                         Выберите кол-во <span className="text-primary">звезд</span>
                     </h1>
                     <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-                        Покупайте звезды для создания сайтов с помощью Websity.
+                        Покупайте звезды для создания диет с помощью Диетикса.
                         Больше звезд — выгоднее!
                     </p>
                 </div>
@@ -222,7 +231,7 @@ export default function PricingPage() {
                 </div>
 
                 <div className="mt-12 text-center text-gray-500 text-sm">
-                    * 1 звезда = 1 генерация контента. Звезды не сгорают.
+                    * 1 звезда = 1 генерация диеты. Звезды не сгорают.
                 </div>
             </div>
         </div>

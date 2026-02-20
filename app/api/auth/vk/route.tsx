@@ -104,6 +104,7 @@ export async function POST(req: Request) {
                 avatarUrl: user.avatarUrl,
                 credits: user.credits,
                 tariff: "free",
+                tariffExpiresAt: null
             },
         });
 

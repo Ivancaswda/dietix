@@ -58,11 +58,11 @@ export default function GoalStep({
 
                 <div className="flex items-center justify-center flex-wrap py-4  gap-4">
                     {goals.map((g) => (
-                        <button
+                        <button style={{width: '220px', height: '190px'}}
                             key={g.id}
                             onClick={() => setGoal(g.id)}
                             className={clsx(
-                                "rounded-2xl border p-6 text-left transition-all",
+                                "rounded-2xl  border p-6 text-left transition-all",
                                 "hover:shadow-lg hover:-translate-y-1",
                                 goal === g.id
                                     ? "border-primary bg-primary/5 shadow-md"

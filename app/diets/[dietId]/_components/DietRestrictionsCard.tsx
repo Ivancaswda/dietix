@@ -35,7 +35,7 @@ export function DietRestrictionsCard({
     };
 
     return (
-        <Card>
+        <Card className='max-w-4xl w-full mx-auto'>
             <CardContent className="p-6 space-y-4">
                 <h3 className="font-semibold text-lg">
                     🚫 Что вы не едите / не переносите
@@ -53,6 +53,9 @@ export function DietRestrictionsCard({
                         onChange={(e) => setValue(e.target.value)}
                         enterKeyHint="done"
                     />
+                    <p className='text-muted-foreground text-xs mt-4 font-semibold'>
+                        Нажмите <span className='px-2 border-2 border-black mx-1 rounded-full bg-gray-500'>Enter</span> чтобы добавить
+                    </p>
                 </form>
 
                 <div className="flex flex-wrap gap-2">
@@ -60,7 +63,7 @@ export function DietRestrictionsCard({
                         <Badge
                             key={item}
                             variant="secondary"    onClick={() => {
-                            console.log('asasgsgagasgas')
+
                             removeRestriction(item)
                         }}
                             className="flex cursor-pointer items-center gap-1"

@@ -21,7 +21,7 @@ export default function BodyParamsStep({
 
     return (
         <Card className="max-w-3xl mx-auto">
-            <CardContent className="p-8 space-y-8">
+            <CardContent className="p-0 sm:p-8 space-y-8">
 
                 <div className="text-center space-y-2 mb-6">
                     <h2 className="text-2xl font-bold">Параметры тела</h2>
@@ -31,7 +31,7 @@ export default function BodyParamsStep({
                 </div>
 
 
-                <div className="flex flex-wrap  gap-6">
+                <div className="flex  flex-wrap  gap-6">
                     <ParamInput
                         icon={<Ruler />}
                         label="Рост"

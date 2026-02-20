@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { DownloadCloudIcon, Loader2Icon } from "lucide-react";
+import {DownloadCloudIcon, Loader2, Loader2Icon, SparklesIcon} from "lucide-react";
 import { FaBowlFood } from "react-icons/fa6";
 import Image from "next/image";
 import { EditDietDialog } from "@/app/diet-view/[dietId]/_components/EditDietDialog";
@@ -14,14 +14,16 @@ import { DeleteDietAlert } from "@/app/diet-view/[dietId]/_components/DeleteDiet
 import { useAuth } from "@/app/context/useAuth";
 import { useReactToPrint } from "react-to-print";
 import html2canvas from "html2canvas";
-
+import {toast} from "sonner";
+import confetti from "canvas-confetti";
+import {FaMagic} from "react-icons/fa";
 const DietViewPage = () => {
     const { dietId } = useParams();
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     const { user } = useAuth();
-
+    const [regenerating, setRegenerating] = useState(false);
 
     const printRef = useRef<HTMLDivElement>(null);
 
@@ -37,6 +39,39 @@ const DietViewPage = () => {
         load();
     }, [dietId]);
 
+    const regenerateDiet = async () => {
+        try {
+            setRegenerating(true);
+            console.log('dietReg===')
+
+            await axios.post("/api/diets/generate", {
+                dietId,
+                regenerate: true,
+                data: {
+                    ...diet[0]
+                },
+            });
+
+            toast.success("Рацион обновлён ✨");
+
+
+            const res = await axios.get(`/api/diets/getOne?dietId=${dietId}`);
+            setData(res.data);
+        } catch (e) {
+            toast.error("Ошибка перегенерации");
+        } finally {
+            setRegenerating(false);
+        }
+    };
+    useEffect(() => {
+        if (regenerating) {
+            confetti({
+                particleCount: 120,
+                spread: 70,
+                origin: { y: 0.6 },
+            });
+        }
+    }, [regenerating]);
     if (loading) {
         return (
             <div className="grid gap-6 max-w-4xl mx-auto my-6">
@@ -50,17 +85,36 @@ const DietViewPage = () => {
     const { diet, meals } = data;
 
     return (
-        <div className="max-w-4xl flex flex-col gap-4 mx-auto p-6 space-y-6">
-            {/* Кнопки */}
-            <div className="flex flex-wrap gap-4">
+        <div className="max-w-4xl mt-8 flex flex-col gap-4 mx-auto p-2 sm:p-6 space-y-6">
+
+            <div className="flex flex-wrap items-center gap-4">
                 <Button onClick={() => router.replace("/dashboard")}>
                     <FaBowlFood />
                     К диетам
                 </Button>
+                <Button
+                    variant="secondary"
+                    onClick={regenerateDiet}
+                    disabled={regenerating}
+                    className="gap-2 cursor-pointer hover:scale-105 transition-all"
+                >
+                    {regenerating ? (
+                        <>
+                            <Loader2Icon className="animate-spin" />
+                            Перегенерация...
+                        </>
+                    ) : (
+                        <>
+                            <SparklesIcon />
+                            Перегенерировать
+                        </>
+                    )}
+                </Button>
 
             </div>
 
-            {/* Контент для печати */}
+
+
             <div ref={printRef} className="space-y-6">
                 <Card>
                     <CardContent className="p-6 space-y-2">
@@ -76,7 +130,7 @@ const DietViewPage = () => {
                 {meals.map((meal: any, idx: number) => (
                     <Card key={idx}>
                         <CardHeader>
-                            <div className="flex items-center justify-between px-4">
+                            <div  className="flex items-center justify-between px-1 ">
                                 {meal.youtubeVideo !== "[]" ? (
                                     <div className="flex flex-col gap-2 w-full">
                                         <h4 className="font-medium">Видео-рецепты:</h4>
@@ -132,7 +186,7 @@ const DietViewPage = () => {
                                         className="flex justify-between text-sm text-muted-foreground"
                                     >
                     <span>
-                      {ing.ingredientName} — {ing.grams} г
+                      {ing.ingredientName} — <br className='block sm:hidden'/> {ing.grams} г
                     </span>
                                         <span>{ing.calories} ккал</span>
                                     </div>
@@ -155,6 +209,27 @@ const DietViewPage = () => {
                 </div>
 
             </div>
+            {regenerating && (
+                <div className="fixed h-screen inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                    <div className="bg-background rounded-2xl shadow-xl p-8 w-[90%] max-w-md text-center space-y-4 animate-in fade-in zoom-in">
+
+                        <div className="flex justify-center animate-bounce">
+                            <div className="p-4 rounded-full bg-primary/10">
+                                <FaMagic className="h-8 w-8 text-primary " />
+                            </div>
+                        </div>
+
+                        <h3 className="text-lg flex items-center gap-4 text-center justify-center font-semibold">
+
+                            Пересобираем рацион на основе ваших параметров...
+                        </h3>
+
+                        <p className="text-sm text-muted-foreground">
+                            Это может занять до двух минут!
+                        </p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

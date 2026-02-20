@@ -3,6 +3,7 @@ import db from "@/app/config/db";
 import {usersTable} from "@/app/config/schema";
 import { eq } from "drizzle-orm"
 import { cookies } from "next/headers"
+import {ensureValidTariff} from "@/app/lib/ensureValidTariff";
 
 export async function GET(req: Request) {
     const cookieStore = await cookies()
@@ -17,12 +18,12 @@ export async function GET(req: Request) {
 
         const users = await db.select().from(usersTable).where(eq(usersTable.email, decoded.email)).limit(1)
 
-        const user = users[0]
+        let user = users[0]
 
         if (!user) {
             return new Response("User not found", { status: 404 })
         }
-
+        user = await ensureValidTariff(user);
         return Response.json({
             user: {
                 email: user.email,
@@ -30,7 +31,8 @@ export async function GET(req: Request) {
                 createdAt: user.createdAt,
                 avatarUrl: user?.avatarUrl,
                 credits: user?.credits,
-                tariff: user?.tariff
+                tariff: user?.tariff,
+                tariffExpiresAt: user?.tariffExpiresAt
             },
         })
     } catch (err: any) {

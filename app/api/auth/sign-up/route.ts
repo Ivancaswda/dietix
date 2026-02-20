@@ -34,6 +34,7 @@ export async function POST(req: Request) {
             tariff: 'free',
             avatarUrl: null,
             createdAt: new Date().toISOString(),
+            tariffExpiresAt: null
         }).returning();
 
         const user = insertedUser[0];

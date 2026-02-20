@@ -26,7 +26,7 @@ export default function TariffBanner( ) {
                     <div className="flex items-center gap-3">
                         <Crown className="w-6 h-6" />
                         <div>
-                            <h3 className="text-lg font-semibold">Premium активен</h3>
+                            <h3 className="text-2xl font-semibold">Premium активен</h3>
                             <p className="text-sm opacity-90">
                                 Вам доступны все функции без ограничений
                             </p>
@@ -40,10 +40,10 @@ export default function TariffBanner( ) {
     if (user?.tariff === 'basic') {
         return (
             <Card className="bg-gradient-to-r bg-primary text-white  border-0 shadow-lg">
-                <CardContent className="p-6 flex items-center justify-between">
+                <CardContent className="p-6 flex-col gap-4 md:flex-row flex items-center justify-between">
                     <div>
-                        <h3 className="text-xl font-semibold ">Basic тариф</h3>
-                        <p className="text-sm opacity-80">
+                        <h3 className="text-2xl font-semibold text-left md:text-center ">Basic тариф</h3>
+                        <p className="text-sm opacity-80 text-center">
                             Откройте Premium для расширенных возможностей
                         </p>
                     </div>

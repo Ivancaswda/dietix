@@ -37,17 +37,18 @@ export async function POST(req: NextRequest) {
     }
 
 
-
     if (meta.type === "plan") {
         const plan = meta.plan;
-        console.log('plan===', plan)
-        const expiresAt = new Date();
-        expiresAt.setMonth(expiresAt.getMonth() + 1); // +1 месяц
 
+        const expiresAt = new Date();
+        expiresAt.setMinutes(expiresAt.getMinutes() + 1);
+        console.log('expiresAt===')
+        console.log(expiresAt)
         await db
             .update(usersTable)
             .set({
-                tariff: plan
+                tariff: plan,
+                tariffExpiresAt: expiresAt
             })
             .where(eq(usersTable.email, email));
     }
