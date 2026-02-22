@@ -146,7 +146,8 @@ function SignIn() {
 
                     <div className="my-6 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
                     <GoogleButton/>
-                    <VkButton/>
+                    {/* <VkButton/> */}
+
                 </div>
             </div>
         </div>);
