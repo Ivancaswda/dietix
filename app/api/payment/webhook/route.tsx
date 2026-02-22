@@ -2,13 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import db from "@/app/config/db";
 import {paymentsTable, usersTable} from "@/app/config/schema";
 import { eq } from "drizzle-orm";
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
     const body = await req.json();
 
     if (body.event !== "payment.succeeded") {
-        return NextResponse.json({ ok: true });
+        return NextResponse.json({ error: 'Payment is not succeded' }, {status: 400});
     }
 
     const payment = body.object;
@@ -35,7 +34,7 @@ export async function POST(req: NextRequest) {
 
     if (existing) {
         console.log("Duplicate webhook:", paymentId);
-        return NextResponse.json({ ok: true });
+        return NextResponse.json({ ok: false }, {error: 'failed! duplicate webhook'});
     }
 
     await db.transaction(async (tx) => {
