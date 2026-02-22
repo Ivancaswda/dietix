@@ -93,7 +93,7 @@ const DietViewPage = () => {
     return (
         <div className="max-w-4xl mt-8 flex flex-col gap-4 mx-auto p-2 sm:p-6 space-y-6">
 
-            <div className="flex flex-wrap items-center gap-4">
+            <div id='regenerate' className="flex flex-wrap items-center gap-4">
                 <Button onClick={() => router.replace("/dashboard")}>
                     <FaBowlFood />
                     К диетам
@@ -236,6 +236,7 @@ const DietViewPage = () => {
                     </div>
                 </div>
             )}
+            <p className="text-gray-500 font-semibold text-sm text-center mt-4 mb-4">Не понравился рацион? <a className='text-sm text-primary font-semibold' href="#regenerate">перегенерировать</a></p>
         </div>
     );
 };
