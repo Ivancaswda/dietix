@@ -241,7 +241,7 @@ const SidebarComponent = ({ onClose }: { onClose?: () => void }) => {
                     </SidebarGroup>
                 </div>
 
-                <div className="p-3 border-t bg-secondary flex flex-col gap-4 mt-auto">
+                <div className="p-3 border-t mb-2 bg-secondary flex flex-col gap-4 mt-auto">
                         <div className='flex justify-between px-2 items-center gap-4'>
                             <p className='font-semibold'>Ваш тариф:</p>
 

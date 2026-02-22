@@ -13,6 +13,8 @@ import { eq } from "drizzle-orm";
 import db from "@/app/config/db";
 import {getMealImage} from "@/app/lib/get-meal-image";
 import axios from "axios";
+import {getYandexIamToken} from "@/app/lib/yandex";
+
 export const DIET_GENERATE_PROMPT = `
 Ты — профессиональный диетолог и нутрициолог.
 
@@ -84,12 +86,13 @@ function safeJsonParse(text: string) {
 }
 export async function POST(req: NextRequest) {
     try {
-        const { dietId, data, regenerate} = await req.json();
+        const { dietId, data, regenerate } = await req.json();
         const user = await getServerUser();
-        console.log('data', data)
+
         if (!user) {
             return NextResponse.json({ error: "Not authorized" }, { status: 401 });
         }
+
         const [dbUser] = await db
             .select()
             .from(usersTable)
@@ -99,24 +102,19 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "USER_NOT_FOUND" }, { status: 404 });
         }
 
-
         if (!dbUser.credits || dbUser.credits <= 0) {
-            return NextResponse.json(
-                { error: "NO_CREDITS" },
-                { status: 402 }
-            );
+            return NextResponse.json({ error: "NO_CREDITS" }, { status: 402 });
         }
 
 
         await db
             .update(usersTable)
-            .set({
-                credits: dbUser.credits - 1,
-            })
+            .set({ credits: dbUser.credits - 1 })
             .where(eq(usersTable.email, user.email));
 
-        if (!data.apiKey) {
-            return  NextResponse.json({error: 'No gemini api key'}, {status: 400})
+
+        if (user.tariff === "free" && !data.apiKey) {
+            return NextResponse.json({ error: "No gemini api key" }, { status: 400 });
         }
 
 
@@ -128,36 +126,24 @@ export async function POST(req: NextRequest) {
                 height: data.height,
                 weight: data.weight,
                 age: data.age,
-
                 calories: data.calories,
                 protein: data.protein,
                 fat: data.fat,
                 carbs: data.carbs,
-
                 apiKey: data.apiKey,
-
                 eatenMeals: data.eatenMeals ?? [],
                 restrictions: data.restrictions ?? [],
-
                 isConfigured: 1,
                 updatedOn: new Date(),
             })
             .where(eq(dietsTable.dietId, dietId))
             .returning();
+
+
         if (regenerate) {
-            const existingMeals = await db
-                .select({ mealId: dietMealsTable.mealId })
-                .from(dietMealsTable)
-                .where(eq(dietMealsTable.dietId, diet.id));
-
-            const ids = existingMeals.map(m => m.mealId);
-
-            if (ids.length) {
-                await db.delete(dietMealsTable).where(eq(dietMealsTable.dietId, diet.id));
-
-            }
+            await db.delete(dietMealsTable).where(eq(dietMealsTable.dietId, diet.id));
         }
-
+        console.log('user===', dbUser)
 
         const prompt = `
 ${DIET_GENERATE_PROMPT}
@@ -172,22 +158,40 @@ ${JSON.stringify(data.restrictions)}
 ${JSON.stringify(data.eatenMeals)}
 `;
 
+        let rawText: string;
 
-        const genAI = new GoogleGenerativeAI(data.apiKey);
+        if (dbUser.tariff === "basic" || dbUser.tariff === "premium") {
 
+            const yandexApiKey = process.env.YANDEX_API_KEY;
+            if (!yandexApiKey) throw new Error("YANDEX_API_KEY not set");
 
+            const iamToken = await getYandexIamToken();
 
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-        let result
-        try {
-             result = await model.generateContent(prompt);
-        } catch (error) {
-            console.log('ApiKeyerror===', error)
-            throw new Error("API_KEY_IS_INVALID");
+            const response = await axios.post(
+                "https://llm.api.cloud.yandex.net/foundationModels/v1/completion",
+                {
+                    modelUri: `gpt://${process.env.YANDEX_FOLDER_ID}/yandexgpt/latest`,
+                    messages: [{ role: "user", text: prompt }],
+                    completionOptions: { temperature: 0.3, maxTokens: 2000 }
+                },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${iamToken}`,
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+            console.log('response===', response.data.result.alternatives[0].message.text)
+
+            rawText = response.data.result.alternatives[0].message.text;
+        } else {
+
+            const genAI = new GoogleGenerativeAI(data.apiKey);
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+            const result = await model.generateContent(prompt);
+            rawText = result.response.text();
         }
 
-
-        const rawText = result.response.text();
 
         let parsed;
         try {
@@ -201,22 +205,18 @@ ${JSON.stringify(data.eatenMeals)}
 
         for (const meal of parsed.meals) {
             const imageUrl = await getMealImage(meal.name);
-
             const vkVideos = await getVkVideos(meal.name);
-            console.log('vkVideos====', vkVideos)
-            const [mealRow] = await db
-                .insert(mealsTable)
-                .values({
-                    name: meal.name,
-                    dietType: data.dietType,
-                    calories: meal.calories,
-                    protein: meal.protein,
-                    fat: meal.fat,
-                    carbs: meal.carbs,
-                    imageUrl: imageUrl,
-                    youtubeVideo: JSON.stringify(vkVideos),
-                })
-                .returning();
+
+            const [mealRow] = await db.insert(mealsTable).values({
+                name: meal.name,
+                dietType: data.dietType,
+                calories: meal.calories,
+                protein: meal.protein,
+                fat: meal.fat,
+                carbs: meal.carbs,
+                imageUrl: imageUrl,
+                youtubeVideo: JSON.stringify(vkVideos),
+            }).returning();
 
             await db.insert(dietMealsTable).values({
                 dietId: diet.id,
@@ -229,18 +229,15 @@ ${JSON.stringify(data.eatenMeals)}
             });
 
             for (const ingredient of meal.ingredients) {
-                const [ingredientRow] = await db
-                    .insert(mealIngredientsTable)
-                    .values({
-                        mealId: mealRow.id,
-                        ingredientName: ingredient.name,
-                        grams: ingredient.grams,
-                        calories: ingredient.calories,
-                        protein: ingredient.protein,
-                        fat: ingredient.fat,
-                        carbs: ingredient.carbs,
-                    })
-                    .returning();
+                const [ingredientRow] = await db.insert(mealIngredientsTable).values({
+                    mealId: mealRow.id,
+                    ingredientName: ingredient.name,
+                    grams: ingredient.grams,
+                    calories: ingredient.calories,
+                    protein: ingredient.protein,
+                    fat: ingredient.fat,
+                    carbs: ingredient.carbs,
+                }).returning();
 
                 if (ingredient.replacements) {
                     for (const repl of ingredient.replacements) {
@@ -261,11 +258,7 @@ ${JSON.stringify(data.eatenMeals)}
         return NextResponse.json({ success: true });
     } catch (error: any) {
         console.error("❌ diet generate error", error);
-
-        return NextResponse.json(
-            { error: "DIET_GENERATION_FAILED" },
-            { status: 500 }
-        );
+        return NextResponse.json({ error: "DIET_GENERATION_FAILED" }, { status: 500 });
     }
 }
 const VK_VIDEO_URL = "https://api.vk.com/method/video.search";

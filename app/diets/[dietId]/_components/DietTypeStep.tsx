@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {ArrowLeft, Leaf, Salad, Utensils} from "lucide-react";
 import { useState } from "react";
+import {useAuth} from "@/app/context/useAuth";
 
-const DIETS = [
+const BASE_DIETS = [
     {
         value: "Обычное",
         label: "Обычное питание",
@@ -18,12 +19,43 @@ const DIETS = [
         description: "Без мяса и рыбы",
         icon: <Salad />,
     },
+
+];
+const BASIC_DIETS = [
+    {
+        value: "Кето",
+        label: "Кето",
+        description: "Минимум углеводов, высокий жир",
+        icon: <Salad />,
+    },
     {
         value: "Веганское",
         label: "Веганское",
         description: "Только растительные продукты",
         icon: <Leaf />,
     },
+];
+
+const PREMIUM_DIETS = [
+    {
+        value: "Кето",
+        label: "Кето",
+        description: "Минимум углеводов, высокий жир",
+        icon: <Salad />,
+    },
+    {
+        value: "Халяль",
+        label: "Халяль",
+        description: "Соответствует халяльным стандартам",
+        icon: <Utensils />,
+    },
+    {
+        value: "Веганское",
+        label: "Веганское",
+        description: "Только растительные продукты",
+        icon: <Leaf />,
+    },
+
 ];
 
 export default function DietTypeStep({
@@ -34,8 +66,14 @@ export default function DietTypeStep({
     onNext: (dietType: string) => void;
     onBack: () => void; draft: any
 }) {
+    const {user} = useAuth()
+    const tariff = user?.tariff
     const [dietType, setDietType] = useState<string>(draft.dietType ??"");
-
+    const DIETS = [
+        ...BASE_DIETS,
+        ...(tariff === "basic" || tariff === "premium" ? BASIC_DIETS : []),
+        ...(tariff === "premium" ? PREMIUM_DIETS : []),
+    ];
     return (
         <Card className="max-w-3xl mx-auto">
             <CardContent className="p-8 space-y-8">

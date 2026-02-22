@@ -120,7 +120,16 @@ export const emailVerifications = pgTable("email_verifications", {
     expiresAt: timestamp("expires_at").notNull(),
 });
 
-
+export const paymentsTable = pgTable('payments', {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    userEmail: varchar().references(() => usersTable.email),
+    paymentId: varchar(),
+    amount: integer(),
+    plan: varchar(),
+    credits: varchar(),
+    status: varchar(),
+    createdAt: timestamp()
+})
 
 
 

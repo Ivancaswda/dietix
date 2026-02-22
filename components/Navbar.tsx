@@ -62,9 +62,9 @@ const Navbar = () => {
                                 <Button variant="ghost" size="icon" className="rounded-full hover:border-primary border-2 transition">
                                     <Avatar>
 
-                                        <AvatarImage  src={user.avatarUrl}  width={32}
+                                        <AvatarImage className='object-cover'  src={user.avatarUrl}  width={32}
                                                         height={32}/>
-                                        <AvatarFallback className='bg-primary text-white'>
+                                        <AvatarFallback className='bg-primary  text-white'>
                                             {user.userName[0].toUpperCase()}
                                         </AvatarFallback>
                                     </Avatar>

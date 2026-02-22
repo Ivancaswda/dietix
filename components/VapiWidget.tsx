@@ -50,7 +50,7 @@ function VapiWidget() {
       const newCount = user?.aiCallCount - 1;
 
       await axios.post("/api/update-call-count", {aiCallCount: newCount });
-      setCallCount(newCount);
+
     } catch (error) {
       toast.error('Не удалось обновить кол-во звонков')
       console.log(error)
@@ -168,8 +168,7 @@ function VapiWidget() {
       setConnecting(false);
     }
   };
-  console.log('callCOunt===')
-  console.log(callCount)
+  console.log('limitReached', limitReached)
   if (loading) return null;
 
   return (

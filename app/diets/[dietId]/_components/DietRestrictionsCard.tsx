@@ -54,7 +54,7 @@ export function DietRestrictionsCard({
                         enterKeyHint="done"
                     />
                     <p className='text-muted-foreground text-xs mt-4 font-semibold'>
-                        Нажмите <span className='px-2 border-2 border-black mx-1 rounded-full bg-gray-500'>Enter</span> чтобы добавить
+                        Нажмите <span className='px-2 border-2 border-gray-500 mx-1 rounded-full '>Enter</span> чтобы добавить
                     </p>
                 </form>
 

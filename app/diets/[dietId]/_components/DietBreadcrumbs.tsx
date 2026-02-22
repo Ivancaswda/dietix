@@ -6,12 +6,14 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {useAuth} from "@/app/context/useAuth";
 
 export default function DietBreadcrumbs({
                                             step,setStep
                                         }: {
     step: number;
 }) {
+    const {user} = useAuth()
     const steps = [
         "Цель",
         "Параметры тела",
@@ -37,12 +39,14 @@ export default function DietBreadcrumbs({
                                     <BreadcrumbPage className='text-primary font-semibold'>{label}</BreadcrumbPage>
                                 ) : (
                                     <BreadcrumbLink className="cursor-default text-muted-foreground">
-                                        {label}
+                                        {label ==='Gemini api ключ' && user?.tariff !== 'free' ? '' : label}
+
                                     </BreadcrumbLink>
                                 )}
                             </BreadcrumbItem>
+                            {label === 'Gemini api ключ' && user?.tariff !== 'free' ? '' :
+                                (index < steps.length - 1 && <BreadcrumbSeparator />)}
 
-                            {index < steps.length - 1 && <BreadcrumbSeparator />}
                         </div>
                     );
                 })}

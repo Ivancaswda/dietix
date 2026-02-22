@@ -7,9 +7,10 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {Stars} from "lucide-react";
+import {CheckCircle2, FolderOpenIcon, Stars} from "lucide-react";
 import {toast} from "sonner";
 import {LoaderOne} from "@/components/ui/loader";
+import Link from "next/link";
 
 const plans = [
     {
@@ -32,8 +33,9 @@ const plans = [
             "Без Gemini API ключа (встроенный AI)",
             "10 Попыток консультации с Тикси AI ",
             "Умные персонализированные диеты",
-            "История и сохранение планов питания",
+            "Доступен новый тип питания: Кето, Веган",
             "Быстрые обновления и новые функции",
+            "Диета генерируется в 3 раза быстрее",
             "Приоритетная поддержка",
         ],
         key: "basic",
@@ -48,7 +50,7 @@ const plans = [
             "Безлимит в использовании Тикси AI",
             "Подписка сразу на 3 месяца (выгоднее)",
             "Ранний доступ к новым AI-функциям",
-            "Продвинутые диеты (кето, веган, спорт)",
+            "Продвинутые диеты (кето, халяль, веган)",
             "Глубокая персонализация под цели",
             "VIP поддержка 24/7",
         ],
@@ -124,8 +126,8 @@ export default function PricingPage() {
         <div className="min-h-screen bg-gray-50 flex flex-col items-center py-16 px-4">
 
             <div className="text-center mb-12 mt-6">
-                <h1 className="text-4xl lg:text-5xl font-bold mb-4">
-                    Выберите тариф Dietix
+                <h1 className="text-5xl lg:text-5xl font-bold mb-4">
+                    Выберите тариф <span className="text-primary">Диетикс</span>
                 </h1>
 
                 <p className="text-sm text-muted-foreground text-gray-700 max-w-xl mx-auto">
@@ -136,6 +138,11 @@ export default function PricingPage() {
                     Получите доступ к AI-генератору персональных диет.
                     Обновитесь до Pro, чтобы использовать Dietix без API ключей,
                     получать более точные рекомендации и приоритетную поддержку.
+                </p>
+
+                <p className="flex items-center gap-2 justify-center text-center mt-4 text-sm text-gray-600 ">
+                  Как осуществляются возраты? <Link href='/about-payments' className='hover:underline flex items-center gap-2 cursor-pointer'>Подробнее
+                    <FolderOpenIcon className='size-4'/></Link>
                 </p>
             </div>
 
@@ -157,7 +164,7 @@ export default function PricingPage() {
                                     <ul className="text-gray-700 mb-4 space-y-2">
                                         {p.perks.map((perk, i) => (
                                             <li key={i} className="flex text-muted-foreground items-center">
-                                                <span className="mr-2 text-green-500">✔</span>
+                                                <CheckCircle2 className="w-4 h-4 mr-2 text-green-500 mt-0.5 shrink-0" />
                                                 {perk}
                                             </li>
                                         ))}
@@ -199,6 +206,10 @@ export default function PricingPage() {
                         Покупайте звезды для создания диет с помощью Диетикса.
                         Больше звезд — выгоднее!
                     </p>
+                    <p className="flex items-center gap-2 justify-center text-center mt-4 text-sm text-gray-600 ">
+                        Как осуществляются возраты? <Link href='/about-payments' className='hover:underline flex items-center gap-2 cursor-pointer'>Подробнее
+                        <FolderOpenIcon className='size-4'/></Link>
+                    </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
@@ -235,6 +246,10 @@ export default function PricingPage() {
                 <div className="mt-12 text-center text-gray-500 text-sm">
                     * 1 звезда = 1 генерация диеты. Звезды не сгорают.
                 </div>
+                <p className="mt-2 text-gray-500 font-semibold text-xs text-center">Посмотреть сколько у вас звезды можно в
+                    <Link className='hover:text-primary transition-all pl-2' href="/profile" >
+                    Профиле
+                </Link></p>
             </div>
         </div>
     );

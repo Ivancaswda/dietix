@@ -29,16 +29,17 @@ function PricingSection() {
 
                     <ul className="space-y-3 text-muted-foreground mb-8">
                         <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Базовая ИИ-диета</li>
-                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Ограниченный план питания</li>
-                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Общие рекомендации</li>
+                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Обычная поддержка</li>
+                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> 1 попытка консультации с Тикси AI</li>
+                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Добавление Gemini ключа</li>
                     </ul>
 
                     <Button disabled className="mt-auto w-full">
-                        Текущий тариф
+                        Уже есть
                     </Button>
                 </div>
 
-                {/* BASIC */}
+
                 <div className="relative p-8 rounded-3xl bg-card border-2 border-primary shadow-xl scale-[1.03] flex flex-col">
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1 rounded-full text-sm font-semibold">
                         Самый популярный
@@ -53,17 +54,17 @@ function PricingSection() {
 
                     <ul className="space-y-3 text-muted-foreground mb-8">
                         <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Полная персональная диета</li>
-                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Авторасчёт калорий и БЖУ</li>
-                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Учёт целей и предпочтений</li>
-                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Обновление плана в любое время</li>
+                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> 10 попыток консультации с Тикси AI</li>
+                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Без добавления Gemini Api ключа</li>
+                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Возможность возврата</li>
                     </ul>
 
                     <Button
                         onClick={() => router.replace("/pricing")}
-                        disabled={user?.isBasic === 1}
+                        disabled={user?.tariff === 'basic'}
                         className="mt-auto w-full"
                     >
-                        {user?.isBasic === 1 ? "Уже подключён" : "Получить"}
+                        {user?.tariff  === "basic" ? "Уже подключён" : "Получить"}
                     </Button>
                 </div>
 
@@ -78,18 +79,18 @@ function PricingSection() {
 
                     <ul className="space-y-3 text-muted-foreground mb-8">
                         <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Всё из Basic</li>
-                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Расширенный ИИ-анализ</li>
+                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Элитная поддержка</li>
                         <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Тонкая настройка питания</li>
-                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Приоритетные обновления</li>
+                        <li className='flex items-center gap-4'><GiConfirmed className='text-primary'/> Выгоднее Basic</li>
                     </ul>
 
                     <Button
                         variant="outline"
                         onClick={() => router.replace("/pricing")}
-                        disabled={user?.isPremium === 1}
+                        disabled={user?.tariff === 'premium'}
                         className="mt-auto w-full"
                     >
-                        {user?.isPremium === 1 ? "Уже подключён" : "Подключить"}
+                        {user?.tariff === 'premium' ? "Уже подключён" : "Подключить"}
                     </Button>
                 </div>
             </div>
