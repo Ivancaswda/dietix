@@ -6,11 +6,20 @@ import { eq } from "drizzle-orm";
 export async function POST(req: NextRequest) {
     const body = await req.json();
 
+    console.log("=== WEBHOOK HIT ===");
+    console.log("BODY:", body);
+
     if (body.event !== "payment.succeeded") {
-        return NextResponse.json({ error: 'Payment is not succeded' }, {status: 400});
+        return NextResponse.json({ ok: true });
     }
 
     const payment = body.object;
+
+    if (!payment?.metadata) {
+        console.error("NO METADATA", payment);
+        return NextResponse.json({ ok: true });
+    }
+
     const meta = payment.metadata;
     const email = meta.email;
     const paymentId = payment.id;
@@ -22,8 +31,10 @@ export async function POST(req: NextRequest) {
         .limit(1)
         .then(r => r[0]);
 
-    if (!user) return NextResponse.json({ ok: false });
-
+    if (!user) {
+        console.error("USER NOT FOUND:", email);
+        return NextResponse.json({ ok: true });
+    }
 
     const existing = await db
         .select()
@@ -34,52 +45,34 @@ export async function POST(req: NextRequest) {
 
     if (existing) {
         console.log("Duplicate webhook:", paymentId);
-        return NextResponse.json({ ok: false }, {error: 'failed! duplicate webhook'});
+        return NextResponse.json({ ok: true });
     }
 
-    await db.transaction(async (tx) => {
-
+    try {
         if (meta.type === "credits") {
             const creditsToAdd = Number(meta.credits || 0);
 
-            await tx
+            await db
                 .update(usersTable)
-                .set({
-                    credits: (user.credits || 0) + creditsToAdd,
-                })
+                .set({ credits: (user.credits || 0) + creditsToAdd })
                 .where(eq(usersTable.email, email));
         }
-
 
         if (meta.type === "plan") {
             const plan = meta.plan;
             const expiresAt = new Date();
 
-            if (plan === "basic") {
-                expiresAt.setMonth(expiresAt.getMonth() + 1);
+            if (plan === "basic") expiresAt.setMonth(expiresAt.getMonth() + 1);
+            if (plan === "premium") expiresAt.setMonth(expiresAt.getMonth() + 3);
 
-                await tx.update(usersTable).set({
-                    tariff: plan,
-                    tariffExpiresAt: expiresAt,
-                    aiCallCount: 10,
-                }).where(eq(usersTable.email, email));
-            }
-
-            if (plan === "premium") {
-                expiresAt.setMonth(expiresAt.getMonth() + 3);
-
-                await tx.update(usersTable).set({
-                    tariff: plan,
-                    tariffExpiresAt: expiresAt,
-                    aiCallCount: 9999,
-                }).where(eq(usersTable.email, email));
-            }
+            await db.update(usersTable).set({
+                tariff: plan,
+                tariffExpiresAt: expiresAt,
+                aiCallCount: plan === "premium" ? 9999 : 10,
+            }).where(eq(usersTable.email, email));
         }
-        console.log('payment===', payment)
-        console.log('meta===', meta)
 
-
-        await tx.insert(paymentsTable).values({
+        await db.insert(paymentsTable).values({
             userEmail: user.email,
             paymentId: payment.id,
             amount: Number(payment.amount.value),
@@ -88,7 +81,10 @@ export async function POST(req: NextRequest) {
             status: "paid",
             createdAt: new Date(),
         });
-    });
+
+    } catch (err) {
+        console.error("DB ERROR:", err);
+    }
 
     return NextResponse.json({ ok: true });
 }
