@@ -92,7 +92,7 @@ export async function GET(req: Request) {
         });
 
         const response = NextResponse.redirect(
-            new URL("/workspace", req.url)
+            new URL("/dashboard", req.url)
         );
 
         response.cookies.set("token", token, {
