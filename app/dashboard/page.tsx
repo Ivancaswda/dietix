@@ -27,7 +27,9 @@ import TariffBanner from "@/components/TariffBanner";
 
 const DashboardPage = () => {
     const router = useRouter();
-    const { user, loading } = useAuth();
+    const {  loading } = useAuth();
+    const [user, setUser] = useState<any>(null);
+    const [userLoading, setUserLoading] = useState(true);
     const {diets} = useDiets()
     const [Diets, setDiets] = useState(diets ?? []);
     const [isCreating, setIsCreating] = useState(false);
@@ -49,6 +51,9 @@ const DashboardPage = () => {
     useEffect(() => {
         if (user) getAllDiets();
     }, [user]);
+    useEffect(() => {
+        fetchUser()
+    }, []);
 
     const completed = diets.filter((d) => d.isConfigured);
     const drafts = diets.filter((d) => !d.isConfigured);
@@ -63,6 +68,18 @@ const DashboardPage = () => {
         } catch (error) {
             setIsCreating(false);
             toast.error("Не удалось создать диету!");
+        }
+    };
+
+    const fetchUser = async () => {
+        try {
+            const { data } = await axios.get("/api/auth/user");
+            setUser(data.user ?? null);
+        } catch (e) {
+            console.error("User fetch error", e);
+            setUser(null);
+        } finally {
+            setUserLoading(false);
         }
     };
 
