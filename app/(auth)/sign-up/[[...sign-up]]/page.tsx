@@ -16,6 +16,7 @@ import Image from 'next/image'
 import {Button} from "@/components/ui/button";
 import GoogleButton from "@/app/(auth)/GoogleButton";
 import VkButton from "@/app/(auth)/VkButton";
+import YandexButton from "@/app/(auth)/YandexButton";
 function SignUp() {
     const { user, setUser, loading } = useAuth()
     const router = useRouter()
@@ -165,7 +166,7 @@ function SignUp() {
 
                     <GoogleButton/>
                     {/* <VkButton/> */}
-
+                        <YandexButton/>
                 </div>
             </div>
         </div>)

@@ -86,7 +86,7 @@ const Navbar = () => {
                                 <DropdownMenuSeparator/>
                                 <div className='sm:hidden'>
                                     <DropdownMenuItem>
-                                        <Link href="/workspace" className="text-sm text-muted-foreground hover:text-foreground transition">
+                                        <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition">
                                             Рабочая панель
                                         </Link>
                                     </DropdownMenuItem>

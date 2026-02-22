@@ -215,7 +215,7 @@ const ProfilePage = () => {
                 </CardContent>
             </Card>
 
-            <div className="flex justify-center items-center w-full gap-4">
+            <div className="flex flex-wrap sm:flex-row justify-center items-center w-full gap-4">
                 <StatCard title="Всего диет" value={stats.total} />
                 <StatCard title="Активные" value={stats.active} variant="success" />
                 <StatCard title="Черновики" value={stats.drafts} variant="secondary" />

@@ -14,6 +14,7 @@ import { FaGithub, FaGoogle } from 'react-icons/fa'
 import Image from "next/image";
 import GoogleButton from "@/app/(auth)/GoogleButton";
 import VkButton from "@/app/(auth)/VkButton";
+import YandexButton from "@/app/(auth)/YandexButton";
 function SignIn() {
     const { user, setUser } = useAuth()
     const router = useRouter()
@@ -147,7 +148,7 @@ function SignIn() {
                     <div className="my-6 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
                     <GoogleButton/>
                     {/* <VkButton/> */}
-
+                    <YandexButton/>
                 </div>
             </div>
         </div>);
